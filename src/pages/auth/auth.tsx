@@ -1,20 +1,26 @@
 import React from "react";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Control, Controller, useForm } from "react-hook-form";
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { genericRequest } from "../../../utils/generic-request";
+import { environment } from "../../environment/environment";
+
+interface IAuth {
+    email: string;
+    password: string;
+}
 
 export function AuthPage() {
-    const { control, handleSubmit } = useForm();
+    const { control, handleSubmit } = useForm<IAuth>();
 
-    const onSubmit = (data: any) => {
-        console.log(data);
+    const onSubmit = async (data: IAuth) => {
+        return await genericRequest.genericRequest(environment.auth, "POST", data);
     };
-    
+
     return (
-    
-        <View style={styles.container}>
-            <Icon 
-                name="mug-hot" 
+        <View style={styles.logoContainer}>
+            <Icon
+                name="mug-hot"
                 size={60}
                 color="white"
                 style={{ marginBottom: 20 }}
@@ -25,15 +31,18 @@ export function AuthPage() {
                 name="email"
                 rules={{ required: "Email é obrigatório" }}
                 render={({ field: { onChange, value } }) => (
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
-                        placeholderTextColor="#888"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        onChangeText={onChange}
-                        value={value}
-                    />
+                    <View style={styles.inputContainer}>
+                        <Icon name="envelope" style={styles.inputIcon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email"
+                            placeholderTextColor="#888"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    </View>
                 )}
             />
 
@@ -42,15 +51,18 @@ export function AuthPage() {
                 name="password"
                 rules={{ required: "Senha é obrigatória" }}
                 render={({ field: { onChange, value } }) => (
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Senha"
-                        placeholderTextColor="#888"
-                        secureTextEntry
-                        autoCapitalize="none"
-                        onChangeText={onChange}
-                        value={value}
-                    />
+                    <View style={styles.inputContainer}>
+                        <Icon name="lock" style={styles.inputIcon} />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Senha"
+                            placeholderTextColor="#888"
+                            secureTextEntry
+                            autoCapitalize="none"
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    </View>
                 )}
             />
 
@@ -68,26 +80,30 @@ export function AuthPage() {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    logoContainer: {
         flex: 1,
         backgroundColor: "#121212",
         justifyContent: "center",
         alignItems: "center",
         padding: 20,
     },
-    title: {
-        fontSize: 32,
-        color: "#fff",
-        fontWeight: "bold",
-        marginBottom: 30,
+    inputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "#1E1E1E",
+        borderRadius: 8,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+    },
+    inputIcon: {
+        marginRight: 10,
+        fontSize: 20,
+        color: "#888",
     },
     input: {
-        width: "100%",
-        backgroundColor: "#1E1E1E",
+        flex: 1,
         color: "#fff",
-        borderRadius: 8,
         padding: 15,
-        marginBottom: 10,
         fontSize: 16,
     },
     button: {

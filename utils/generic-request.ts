@@ -1,15 +1,16 @@
 import { environment } from "../src/environment/environment";
 
-type httpMethods = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-export class GenericRequest {
+class GenericRequest {
     
-    async genericRequest(endpoint: string, method: httpMethods, body?: any) {
+    async genericRequest(endpoint: string, method: method, body?: any) {
 
         const url = `${environment.apiUrl}/${endpoint}`;
 
         const response = await fetch(url, {
-            method,
+            method: method,
+            mode: 'cors',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -19,3 +20,5 @@ export class GenericRequest {
         return await response.json();
     }
 }
+
+export const genericRequest = new GenericRequest();
