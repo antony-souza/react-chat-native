@@ -11,7 +11,9 @@ interface IAuth {
 }
 
 export function AuthPage() {
-    const { control, handleSubmit } = useForm<IAuth>();
+    const { control, handleSubmit, formState: { isValid } } = useForm<IAuth>({
+        mode: "onChange"
+    });
 
     const onSubmit = async (data: IAuth) => {
         return await genericRequest.genericRequest(environment.auth, "POST", data);
@@ -29,7 +31,13 @@ export function AuthPage() {
             <Controller
                 control={control}
                 name="email"
-                rules={{ required: "Email é obrigatório" }}
+                rules={{ 
+                    required: "Email é obrigatório", 
+                    pattern:{
+                        value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                        message: "Email inválido"
+                    }
+                }}
                 render={({ field: { onChange, value } }) => (
                     <View style={styles.inputContainer}>
                         <Icon name="envelope" style={styles.inputIcon} />
@@ -49,7 +57,13 @@ export function AuthPage() {
             <Controller
                 control={control}
                 name="password"
-                rules={{ required: "Senha é obrigatória" }}
+                rules={{ 
+                    required: "Senha é obrigatória", 
+                    minLength: {
+                        value: 6,
+                        message: "Senha deve ter no mínimo 6 caracteres"
+                    }
+                }}
                 render={({ field: { onChange, value } }) => (
                     <View style={styles.inputContainer}>
                         <Icon name="lock" style={styles.inputIcon} />
@@ -66,7 +80,11 @@ export function AuthPage() {
                 )}
             />
 
-            <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
+            <TouchableOpacity 
+                style={[styles.button, !isValid ? { backgroundColor: "#888" } : {} ]} 
+                onPress={handleSubmit(onSubmit)}
+                disabled = {!isValid}
+            >
                 <Text style={styles.buttonText}>Entrar</Text>
             </TouchableOpacity>
 
