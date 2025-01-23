@@ -1,8 +1,8 @@
-import { environment } from "../src/environment/environment";
+import { environment } from "../environment/environment";
 
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
-class GenericRequest {
+class HttpClient {
     
     async genericRequest(endpoint: string, method: method, body?: any) {
 
@@ -21,4 +21,4 @@ class GenericRequest {
     }
 }
 
-export const genericRequest = new GenericRequest();
+export const httpClient = new HttpClient();

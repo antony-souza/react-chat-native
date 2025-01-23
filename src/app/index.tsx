@@ -1,4 +1,4 @@
-import { AuthPage } from './src/pages/auth/auth';
+import AuthPage from "./auth";
 
 export default function App() {
   return (
