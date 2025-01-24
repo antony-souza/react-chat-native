@@ -1,9 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { Control, Controller, useForm } from "react-hook-form";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Controller, useForm } from "react-hook-form";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { environment } from "../../environment/environment";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
 
@@ -12,15 +12,29 @@ interface IAuth {
     password: string;
 }
 
+interface IResponseAuth {
+    token: string;
+    status: number;
+}
+
 export default function AuthPage() {
+    const router = useRouter();
 
     const { control, handleSubmit, formState: { isValid } } = useForm<IAuth>({
         mode: "onChange"
     });
 
     const onSubmit = async (data: IAuth) => {
-        return await httpClient.genericRequest(environment.auth, "POST", data);
+        try {
+            const response = await httpClient.genericRequest(environment.auth, "POST", data)
+            if (response) {
+                router.push("/home");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
+    
 
 
     return (
