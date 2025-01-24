@@ -6,6 +6,8 @@ import { environment } from "../../environment/environment";
 import { Link, useRouter } from "expo-router";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 interface IAuth {
     email: string;
@@ -13,7 +15,9 @@ interface IAuth {
 }
 
 interface IResponseAuth {
-    token: string;
+    id: string;
+    name: string;
+    userImg: string;
     status: number;
 }
 
@@ -26,14 +30,29 @@ export default function AuthPage() {
 
     const onSubmit = async (data: IAuth) => {
         try {
-            const response = await httpClient.genericRequest(environment.auth, "POST", data)
+            const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
+    
             if (response) {
-                router.push("/home");
+               
+                if (response.userImg) {
+                    await AsyncStorage.setItem("userImg", response.userImg);
+                }
+    
+                if (response.id) {
+                    await AsyncStorage.setItem("userId", response.id);
+                }
+    
+                if (response.name) {
+                    await AsyncStorage.setItem("userName", response.name);
+                }
+    
+                router.push("/chat");
             }
         } catch (error) {
             console.error("Error:", error);
         }
     };
+    
     
 
 

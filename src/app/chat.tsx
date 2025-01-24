@@ -3,8 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image } 
 import io from 'socket.io-client';
 import { httpClient } from '../../utils/generic-request';
 import { environment } from '../../environment/environment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import LayoutPage from '../../layouts/dark-layout';
 
-interface IUserApiResponse{
+interface IUserApiResponse {
     id?: string;
     name: string;
     userImg: string;
@@ -20,16 +22,28 @@ interface IMsgGroupSocketResponse {
     message: string;
 }
 
-
 const ChatPage: React.FC = () => {
     const [messages, setMessages] = useState<IMessageSocketResponse[]>([]);
     const [newMessage, setNewMessage] = useState<string>('');
     const [socket, setSocket] = useState<any>(null);
-    const [user, setUser] = useState<IUserApiResponse[]>([]);
+    const [userName, setUserName] = useState<string | null>(null);
+    const [userImg, setUserImg] = useState<string | null>(null);
 
     useEffect(() => {
 
-        const socketConnection = io(environment.apiUrl);
+        const fetchUserData = async () => {
+            const storedUserName = await AsyncStorage.getItem('userName');
+            const storedUserImg = await AsyncStorage.getItem('userImg');
+
+            setUserName(storedUserName);
+            setUserImg(storedUserImg);
+        };
+
+        fetchUserData();
+
+        const socketConnection = io(environment.apiUrl, {
+            autoConnect: true,
+        });
         setSocket(socketConnection);
 
         socketConnection.on('msgGroup', (data: IMsgGroupSocketResponse) => {
@@ -37,8 +51,8 @@ const ChatPage: React.FC = () => {
                 ...prevMessages,
                 {
                     user: {
-                        name: data.clientId,
-                        userImg: 'https://i.imgur.com/6kVp2nq.jpeg',
+                        name: userName || "Usuário Desconhecido",
+                        userImg: userImg || "defaultImageUrl",
                     },
                     messageData: data.message,
                 },
@@ -48,7 +62,7 @@ const ChatPage: React.FC = () => {
         return () => {
             socketConnection.disconnect();
         };
-    }, []);
+    }, [userName, userImg]);
 
     const handleSendMessage = () => {
         if (newMessage.trim() && socket) {
@@ -66,38 +80,41 @@ const ChatPage: React.FC = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <FlatList
-                data={messages}
-                renderItem={({ item }) => (
-                    <View style={styles.messageContainer}>
-                        <View style={styles.messageHeader}>
-                            <Image source={{ uri: item.user.userImg }} style={styles.senderPhoto} />
-                            <Text style={styles.senderName}>{item.user.name}</Text>
+        <LayoutPage>
+            <View style={styles.container}>
+                <FlatList
+                    data={messages}
+                    renderItem={({ item }) => (
+                        <View style={styles.messageContainer}>
+                            <View style={styles.messageHeader}>
+                                <Image source={{ uri: item.user.userImg }} style={styles.senderPhoto} />
+                                <Text style={styles.senderName}>{item.user.name}</Text>
+                            </View>
+                            <Text style={styles.messageText}>{item.messageData}</Text>
                         </View>
-                        <Text style={styles.messageText}>{item.messageData}</Text>
-                    </View>
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                style={styles.messagesList}
-            />
-
-            <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Digite sua mensagem"
-                    value={newMessage}
-                    onChangeText={setNewMessage}
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    style={styles.messagesList}
                 />
-                <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
-                    <Text style={styles.sendButtonText}>Enviar</Text>
+
+
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Digite sua mensagem"
+                        value={newMessage}
+                        onChangeText={setNewMessage}
+                    />
+                    <TouchableOpacity onPress={handleSendMessage} style={styles.sendButton}>
+                        <Text style={styles.sendButtonText}>Enviar</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity onPress={handleJoinGroup} style={styles.joinButton}>
+                    <Text style={styles.joinButtonText}>Entrar na sala</Text>
                 </TouchableOpacity>
             </View>
-
-            <TouchableOpacity onPress={handleJoinGroup} style={styles.joinButton}>
-                <Text style={styles.joinButtonText}>Entrar na sala</Text>
-            </TouchableOpacity>
-        </View>
+        </LayoutPage>
     );
 };
 
@@ -124,7 +141,7 @@ const styles = StyleSheet.create({
     senderPhoto: {
         width: 40,
         height: 40,
-        borderRadius: 20, // Foto circular
+        borderRadius: 20,
         marginRight: 10,
     },
     senderName: {
