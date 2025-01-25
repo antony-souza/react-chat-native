@@ -12,7 +12,7 @@ import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import LayoutPage from '../../layouts/dark-layout';
-import { environment } from '../../environment/environment';
+import { environment } from '../../environment';
 import { useGlobalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 

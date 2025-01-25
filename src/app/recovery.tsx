@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Control, Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { environment } from "../../environment/environment";
+import { environment } from "../../environment";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
 import { Link } from "expo-router";

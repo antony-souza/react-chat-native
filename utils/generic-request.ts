@@ -1,4 +1,4 @@
-import { environment } from "../environment/environment";
+import { environment } from "../environment";
 
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 

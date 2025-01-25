@@ -1,13 +1,12 @@
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { environment } from "../../environment/environment";
+import { environment } from "../../environment";
 import { Link, useRouter } from "expo-router";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 interface IAuth {
     email: string;
@@ -23,17 +22,18 @@ interface IResponseAuth {
 
 export default function AuthPage() {
     const router = useRouter();
+    const [loading, setLoading] = useState(false); 
 
     const { control, handleSubmit, formState: { isValid } } = useForm<IAuth>({
         mode: "onChange"
     });
 
     const onSubmit = async (data: IAuth) => {
+        setLoading(true); 
         try {
             const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
     
             if (response) {
-               
                 if (response.userImg) {
                     await AsyncStorage.setItem("userImg", response.userImg);
                 }
@@ -49,12 +49,11 @@ export default function AuthPage() {
                 router.push("/rooms");
             }
         } catch (error) {
-            console.error("Error:", error);
+            
+        } finally {
+            setLoading(false);
         }
     };
-    
-    
-
 
     return (
         <View style={styles.logoContainer}>
@@ -110,9 +109,13 @@ export default function AuthPage() {
             <TouchableOpacity
                 style={[styles.button, !isValid ? { backgroundColor: "#888" } : {}]}
                 onPress={handleSubmit(onSubmit)}
-                disabled={!isValid}
+                disabled={!isValid || loading} 
             >
-                <Text style={styles.buttonText}>Entrar</Text>
+                {loading ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                    <Text style={styles.buttonText}>Entrar</Text>
+                )}
             </TouchableOpacity>
 
             <View style={styles.linksContainer}>
