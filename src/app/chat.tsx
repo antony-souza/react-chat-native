@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 import LayoutPage from '../../layouts/dark-layout';
 import { useGlobalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { environment } from './environment/environment';
+import { environment } from '../environment/environment';
 
 interface IMessage {
     clientId: string;
@@ -36,9 +36,9 @@ const ChatPage: React.FC = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const storedUserId = await AsyncStorage.getItem('userId');
-            const storedUserName = await AsyncStorage.getItem('userName');
-            const storedUserImg = await AsyncStorage.getItem('userImg');
+            const storedUserId = await AsyncStorage.getItem('@userId');
+            const storedUserName = await AsyncStorage.getItem('@userName');
+            const storedUserImg = await AsyncStorage.getItem('@userImg');
 
             setUserId(storedUserId);
             setUserName(storedUserName);

@@ -6,7 +6,7 @@ import { Link, useRouter } from "expo-router";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { environment } from "./environment/environment";
+import { environment } from "../environment/environment";
 
 interface IAuth {
     email: string;
@@ -35,15 +35,15 @@ export default function AuthPage() {
     
             if (response) {
                 if (response.userImg) {
-                    await AsyncStorage.setItem("userImg", response.userImg);
+                    await AsyncStorage.setItem("@userImg", response.userImg);
                 }
     
                 if (response.id) {
-                    await AsyncStorage.setItem("userId", response.id);
+                    await AsyncStorage.setItem("@userId", response.id);
                 }
     
                 if (response.name) {
-                    await AsyncStorage.setItem("userName", response.name);
+                    await AsyncStorage.setItem("@userName", response.name);
                 }
     
                 router.push("/rooms");
