@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { environment } from "../../environment";
 import { Link, useRouter } from "expo-router";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { environment } from "./environment/environment";
 
 interface IAuth {
     email: string;

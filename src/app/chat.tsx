@@ -12,9 +12,9 @@ import io from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import LayoutPage from '../../layouts/dark-layout';
-import { environment } from '../../environment';
 import { useGlobalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { environment } from './environment/environment';
 
 interface IMessage {
     clientId: string;
@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'space-between',
-        backgroundColor: '#121212', 
     },
     header: {
         flexDirection: 'row',
@@ -163,8 +162,7 @@ const styles = StyleSheet.create({
     chatBox: {
         flex: 1,
         margin: 10,
-        padding: 10,
-        backgroundColor: '#1e1e1e', 
+        padding: 10, 
         borderRadius: 10,
     },
     messagesList: {

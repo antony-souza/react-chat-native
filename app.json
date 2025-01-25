@@ -7,21 +7,22 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "schema": "DuckChat",
+    "scheme": "DuckChat",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#121212"
-    },
-    "ios": {
-      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#121212"
       },
-      "package": "com.antonydev_bash.duckchat"
+      "package": "com.antonydev_bash.duckchat",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,7 +35,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "b9ff304b-1e21-42f0-a109-e28d89f6fc46"
+        "projectId": "21d8fe00-5160-4e96-a048-1dc5a6b80d8b"
       }
     }
   }

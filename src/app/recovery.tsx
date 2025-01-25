@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Control, Controller, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { environment } from "../../environment";
-import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
 import { Link } from "expo-router";
 
@@ -18,7 +16,7 @@ export default function RecoveryPassword() {
   const { control, handleSubmit, formState: { isValid } } = useForm<IAuth>({ mode: "onChange" });
 
   const handleEmailSubmit = async (data: { email: string }) => {
-    /* await httpClient.genericRequest(`${environment.auth}/send-code`, "POST", { email: data.email }); */
+     /* await httpClient.genericRequest(`${environment.auth}/send-code`, "POST", { email: data.email }); */
     setStep(2); 
   };
 

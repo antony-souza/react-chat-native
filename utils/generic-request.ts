@@ -1,4 +1,4 @@
-import { environment } from "../environment";
+import { environment } from "../src/app/environment/environment";
 
 type method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -14,7 +14,7 @@ class HttpClient {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(body),
+            body: body ? JSON.stringify(body) : undefined
         });
 
         return await response.json();

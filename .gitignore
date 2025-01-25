@@ -4,7 +4,7 @@
 node_modules/
 
 #env
-environment.ts
+#/environment/environment.ts
 
 # Expo
 .expo/
