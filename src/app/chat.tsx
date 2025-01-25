@@ -9,7 +9,7 @@ import {
     Image,
 } from 'react-native';
 import io from 'socket.io-client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
 import LayoutPage from '../../layouts/dark-layout';
 import { useGlobalSearchParams } from 'expo-router';
@@ -36,9 +36,9 @@ const ChatPage: React.FC = () => {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const storedUserId = await AsyncStorage.getItem('@userId');
-            const storedUserName = await AsyncStorage.getItem('@userName');
-            const storedUserImg = await AsyncStorage.getItem('@userImg');
+            const storedUserId = await SecureStore.getItemAsync('userId');
+            const storedUserName = await SecureStore.getItemAsync('userName');
+            const storedUserImg = await SecureStore.getItemAsync('userImg');
 
             setUserId(storedUserId);
             setUserName(storedUserName);
@@ -227,7 +227,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 });
-
-
 
 export default ChatPage;

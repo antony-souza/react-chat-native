@@ -8,7 +8,7 @@ import {
     Alert,
 } from 'react-native';
 import LayoutPage from '../../layouts/dark-layout';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
 
 const RoomSelectionPage: React.FC = () => {
@@ -17,13 +17,13 @@ const RoomSelectionPage: React.FC = () => {
 
     const router = useRouter();
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            const storedUserName = await AsyncStorage.getItem('userName') || '';
-            setUserName(storedUserName);
-        };
+    const fetchUserData = async () => {
+        const storedUserName = await SecureStore.getItemAsync('userName') || '';
+        setUserName(storedUserName);
+    };
 
-        fetchUserData();
+    useEffect(() => {
+        fetchUserData
     }, []);
 
     const handleCreateOrJoinRoom = () => {

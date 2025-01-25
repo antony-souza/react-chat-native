@@ -5,8 +5,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Link, useRouter } from "expo-router";
 import { httpClient } from "../../utils/generic-request";
 import { InputCase } from "../../components/input";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from "expo-secure-store";
 import { environment } from "../environment/environment";
+
 
 interface IAuth {
     email: string;
@@ -28,32 +29,33 @@ export default function AuthPage() {
         mode: "onChange"
     });
 
+
     const onSubmit = async (data: IAuth) => {
-        setLoading(true); 
+        setLoading(true);
         try {
-            const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
+          const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
     
-            if (response) {
-                if (response.userImg) {
-                    await AsyncStorage.setItem("@userImg", response.userImg);
-                }
-    
-                if (response.id) {
-                    await AsyncStorage.setItem("@userId", response.id);
-                }
-    
-                if (response.name) {
-                    await AsyncStorage.setItem("@userName", response.name);
-                }
-    
-                router.push("/rooms");
+          if (response) {
+            if (response.userImg) {
+              await SecureStore.setItemAsync("userImg", response.userImg);
             }
+    
+            if (response.id) {
+              await SecureStore.setItemAsync("userId", response.id);
+            }
+    
+            if (response.name) {
+              await SecureStore.setItemAsync("userName", response.name);
+            }
+    
+           router.push("/rooms");
+          }
         } catch (error) {
-            
+          console.error("Erro ao autenticar:", error);
         } finally {
-            setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
     return (
         <View style={styles.logoContainer}>
