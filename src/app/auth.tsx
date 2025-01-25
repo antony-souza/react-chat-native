@@ -46,7 +46,7 @@ export default function AuthPage() {
                     await AsyncStorage.setItem("userName", response.name);
                 }
     
-                router.push("/chat");
+                router.push("/rooms");
             }
         } catch (error) {
             console.error("Error:", error);
