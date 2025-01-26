@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -8,23 +8,13 @@ import {
     Alert,
 } from 'react-native';
 import LayoutPage from '../../layouts/dark-layout';
-import * as SecureStore from 'expo-secure-store';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
 
 const RoomSelectionPage: React.FC = () => {
     const [roomName, setRoomName] = useState<string>('');
-    const [userName, setUserName] = useState<string>('');
 
     const router = useRouter();
-
-    const fetchUserData = async () => {
-        const storedUserName = await SecureStore.getItemAsync('userName') || '';
-        setUserName(storedUserName);
-    };
-
-    useEffect(() => {
-        fetchUserData
-    }, []);
 
     const handleCreateOrJoinRoom = () => {
         if (!roomName.trim()) {
@@ -41,10 +31,9 @@ const RoomSelectionPage: React.FC = () => {
     return (
         <LayoutPage>
             <View style={styles.container}>
-                <Text style={styles.title}>{userName},</Text>
+                <Icon name="comments" style={styles.logoContainer} />
                 <Text style={styles.title}>Bem-vindo ao DuckChat!</Text>
                 <Text style={styles.subtitle}>Crie ou entre em uma sala</Text>
-
                 <TextInput
                     style={styles.input}
                     placeholder="Digite o nome da sala"
@@ -53,12 +42,20 @@ const RoomSelectionPage: React.FC = () => {
                     onChangeText={setRoomName}
                 />
 
-                <TouchableOpacity
-                    onPress={handleCreateOrJoinRoom}
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Entrar na Sala</Text>
-                </TouchableOpacity>
+                <View style={styles.buttonGroup}>
+                    <TouchableOpacity
+                        onPress={handleCreateOrJoinRoom}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Entrar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleCreateOrJoinRoom}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Criar Sala</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </LayoutPage>
     );
@@ -92,6 +89,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20,
     },
+    buttonGroup: {
+        width: '100%',
+        marginTop: 10,
+    },
     button: {
         width: '100%',
         height: 50,
@@ -99,11 +100,19 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
+        marginBottom: 10, 
     },
     buttonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    logoContainer: {
+        justifyContent: "center",
+        fontSize: 100,
+        alignItems: "center",
+        color: "#6200EE",
+        padding: 20,
     },
 });
 

@@ -8,7 +8,6 @@ import { InputCase } from "../../components/input";
 import * as SecureStore from "expo-secure-store";
 import { environment } from "../environment/environment";
 
-
 interface IAuth {
     email: string;
     password: string;
@@ -23,47 +22,46 @@ interface IResponseAuth {
 
 export default function AuthPage() {
     const router = useRouter();
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
 
     const { control, handleSubmit, formState: { isValid } } = useForm<IAuth>({
         mode: "onChange"
     });
 
-
     const onSubmit = async (data: IAuth) => {
         setLoading(true);
         try {
-          const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
-    
-          if (response) {
-            if (response.userImg) {
-              await SecureStore.setItemAsync("userImg", response.userImg);
+            const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
+
+            if (response) {
+                if (response.userImg) {
+                    await SecureStore.setItemAsync("userImg", response.userImg);
+                }
+
+                if (response.id) {
+                    await SecureStore.setItemAsync("userId", response.id);
+                }
+
+                if (response.name) {
+                    await SecureStore.setItemAsync("userName", response.name);
+                }
+
+                router.push("/rooms");
             }
-    
-            if (response.id) {
-              await SecureStore.setItemAsync("userId", response.id);
-            }
-    
-            if (response.name) {
-              await SecureStore.setItemAsync("userName", response.name);
-            }
-    
-           router.push("/rooms");
-          }
         } catch (error) {
-          console.error("Erro ao autenticar:", error);
+            console.error("Erro ao autenticar:", error);
         } finally {
-          setLoading(false);
+            setLoading(false);
         }
-      };
+    };
 
     return (
-        <View style={styles.logoContainer}>
+        <View style={styles.container}>
             <Icon
-                name="mug-hot"
-                size={60}
-                color="white"
-                style={{ marginBottom: 20 }}
+                name="user-friends"
+                size={80}
+                color="#6200EE"
+                style={styles.icon}
             />
 
             <Controller
@@ -111,7 +109,7 @@ export default function AuthPage() {
             <TouchableOpacity
                 style={[styles.button, !isValid ? { backgroundColor: "#888" } : {}]}
                 onPress={handleSubmit(onSubmit)}
-                disabled={!isValid || loading} 
+                disabled={!isValid || loading}
             >
                 {loading ? (
                     <ActivityIndicator size="small" color="#fff" />
@@ -121,8 +119,12 @@ export default function AuthPage() {
             </TouchableOpacity>
 
             <View style={styles.linksContainer}>
-                <Link 
-                    href={"/recovery"} 
+                <Link
+                    href={"/register"}
+                    style={styles.link}
+                >Criar conta</Link>
+                <Link
+                    href={"/recovery"}
                     style={styles.link}
                 >Esqueceu a senha?</Link>
             </View>
@@ -131,12 +133,15 @@ export default function AuthPage() {
 }
 
 const styles = StyleSheet.create({
-    logoContainer: {
+    container: {
         flex: 1,
-        backgroundColor: "#121212",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#121212",
         padding: 20,
+    },
+    icon: {
+        marginBottom: 20,
     },
     button: {
         width: "100%",
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
     },
     linksContainer: {
         flexDirection: "row",
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
         width: "100%",
         marginTop: 20,
     },
