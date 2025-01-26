@@ -12,6 +12,7 @@ import LayoutPage from '../../layouts/dark-layout';
 import { Ionicons } from '@expo/vector-icons';
 import { Controller, useForm } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
+import * as SecureStore from "expo-secure-store";
 import { InputCase } from '../../components/input';
 import { httpClient } from '../../utils/generic-request';
 import { environment } from '../environment/environment';
@@ -25,7 +26,7 @@ interface ICreateAccount {
 
 const CreateAccountPage: React.FC = () => {
     const router = useRouter();
-    const { control, handleSubmit, setValue } = useForm<ICreateAccount>();
+    const { control, handleSubmit, setValue, formState: { isValid } } = useForm<ICreateAccount>();
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -50,12 +51,20 @@ const CreateAccountPage: React.FC = () => {
         }
         const response = await httpClient.genericRequest(environment.createUser, 'POST', formData);
         console.log(response);
-        if (response.statusCode === 400) {
+        if (response.statusCode === 400 || response.statusCode === 500) {
             alert(response.message);
+            setLoading(false);
             return;
         }
         alert('Conta criada com sucesso!');
         setLoading(false);
+
+        await Promise.all([
+            SecureStore.deleteItemAsync('userId'),
+            SecureStore.deleteItemAsync('userName'),
+            SecureStore.deleteItemAsync('userImg'),
+        ]);
+
         router.push('/auth');
     };
 
@@ -98,6 +107,7 @@ const CreateAccountPage: React.FC = () => {
                         control={control}
                         name="imgUrl"
                         defaultValue=""
+                        rules={{ required: 'Foto de perfil é obrigatória' }}
                         render={({ field: { value } }) => (
                             <View style={styles.imagePickerContainer}>
                                 {profileImage && (
@@ -113,6 +123,7 @@ const CreateAccountPage: React.FC = () => {
                         control={control}
                         name="name"
                         defaultValue=""
+                        rules={{ required: 'Nome é obrigatório' }}
                         render={({ field: { onChange, value } }) => (
                             <InputCase
                                 icon="user"
@@ -126,6 +137,13 @@ const CreateAccountPage: React.FC = () => {
                         control={control}
                         name="email"
                         defaultValue=""
+                        rules={{
+                            required: 'Email é obrigatório',
+                            pattern: {
+                                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                                message: 'Email inválido',
+                            },
+                        }}
                         render={({ field: { onChange, value } }) => (
                             <InputCase
                                 icon="envelope"
@@ -140,10 +158,17 @@ const CreateAccountPage: React.FC = () => {
                         control={control}
                         name="password"
                         defaultValue=""
+                        rules={{
+                            required: 'Senha é obrigatória',
+                            minLength: {
+                                value: 6,
+                                message: 'Senha deve ter no mínimo 6 caracteres',
+                            },
+                        }}
                         render={({ field: { onChange, value } }) => (
                             <InputCase
                                 icon="lock"
-                                placeholder="Senha"
+                                placeholder="Senha - Senha deve ter no mínimo 6 caracteres"
                                 value={value}
                                 onChange={onChange}
                                 secureTextEntry
@@ -152,10 +177,11 @@ const CreateAccountPage: React.FC = () => {
                     />
                     <TouchableOpacity
                         onPress={handleSubmit(handleCreateAccount)}
-                        style={styles.createButton}
+                        style={[styles.createButton, !isValid ? { backgroundColor: "#888" } : {}]}
+                        disabled={!isValid || loading }
                     >
                         {loading ? <ActivityIndicator size="small" color="#fff" /> :
-                                <Text style={styles.createButtonText}>Criar Conta</Text>
+                            <Text style={styles.createButtonText}>Criar Conta</Text>
                         }
                     </TouchableOpacity>
                 </View>

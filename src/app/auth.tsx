@@ -34,17 +34,11 @@ export default function AuthPage() {
             const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
 
             if (response) {
-                if (response.userImg) {
-                    await SecureStore.setItemAsync("userImg", response.userImg);
-                }
-
-                if (response.id) {
-                    await SecureStore.setItemAsync("userId", response.id);
-                }
-
-                if (response.name) {
-                    await SecureStore.setItemAsync("userName", response.name);
-                }
+                await Promise.all([
+                    SecureStore.setItemAsync("userId", response.id),
+                    SecureStore.setItemAsync("userName", response.name),
+                    SecureStore.setItemAsync("userImg", response.userImg)
+                ])
 
                 router.push("/rooms");
             }
@@ -123,10 +117,10 @@ export default function AuthPage() {
                     href={"/register"}
                     style={styles.link}
                 >Criar conta</Link>
-                <Link
+                {/* <Link
                     href={"/recovery"}
                     style={styles.link}
-                >Esqueceu a senha?</Link>
+                >Esqueceu a senha?</Link> */}
             </View>
         </View>
     );
