@@ -7,6 +7,7 @@ import {
     StyleSheet,
     FlatList,
     Image,
+    ToastAndroid
 } from 'react-native';
 import io from 'socket.io-client';
 import * as SecureStore from 'expo-secure-store';
@@ -49,10 +50,10 @@ const ChatPage: React.FC = () => {
 
         const socketConnection = io(environment.apiUrl, {
             autoConnect: true,
-        });
+        })
         setSocket(socketConnection);
 
-        socketConnection.emit('joinGroup', groupName);
+        socketConnection.emit('joinGroup',userName, groupName);
 
         socketConnection.on('msgGroup', (data: IMessage) => {
             setMessages((prevMessages) => [...prevMessages, data]);
@@ -61,7 +62,7 @@ const ChatPage: React.FC = () => {
         return () => {
             socketConnection.disconnect();
         };
-    }, []);
+    }, [])
 
     const handleSendMessage = () => {
         if (newMessage.trim() && socket && userId && userImg && userName) {
@@ -200,6 +201,7 @@ const styles = StyleSheet.create({
     },
     messageText: {
         color: '#fff',
+        fontSize: 16,
     },
     inputContainer: {
         flexDirection: 'row',

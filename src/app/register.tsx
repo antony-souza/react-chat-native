@@ -154,7 +154,9 @@ const CreateAccountPage: React.FC = () => {
                         onPress={handleSubmit(handleCreateAccount)}
                         style={styles.createButton}
                     >
-                        <Text style={styles.createButtonText}>Criar Conta</Text>
+                        {loading ? <ActivityIndicator size="small" color="#fff" /> :
+                                <Text style={styles.createButtonText}>Criar Conta</Text>
+                        }
                     </TouchableOpacity>
                 </View>
             </View>
