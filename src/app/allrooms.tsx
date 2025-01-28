@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import LayoutPage from "../../layouts/dark-layout";
 import { useEffect, useState } from "react";
 import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
 import Header from "../../components/header";
+import { useRouter } from "expo-router";
 
 interface IRoomsList {
     id: string;
@@ -11,33 +12,42 @@ interface IRoomsList {
     imgUrl: string;
 }
 
-export const RoomsListPage = () => {
+const RoomsListPage = () => {
     const [rooms, setRooms] = useState<IRoomsList[]>([]);
+    const title: string = "Salas";
+    const router = useRouter();
 
     useEffect(() => {
         handleListRooms();
     }, []);
 
-    const handleListRooms = async () => {
+    const handleListRooms = async (): Promise<IRoomsList[]> => {
         const response = await httpClient.genericRequest(environment.finAllChats, "GET") as IRoomsList[];
         setRooms(response);
-        console.log(response);
+
+        return response;
+    };
+
+    const handlePathChat = (groupName: string) => {
+        router.push({
+            pathname: "/chat",
+            params: { groupName },
+        });
     };
 
     const renderRoom = ({ item }: { item: IRoomsList }) => (
-        <View style={styles.card}>
+        <TouchableOpacity onPress={() => handlePathChat(item.name)} style={styles.card}>
             <Image source={{ uri: item.imgUrl }} style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.roomName}>{item.name}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 
     return (
         <LayoutPage>
-            <Header />
+            <Header title={title} />
             <View style={styles.container}>
-                <Text style={styles.title}>Lista de Salas</Text>
                 <FlatList
                     data={rooms}
                     renderItem={renderRoom}
@@ -92,3 +102,5 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
 });
+
+export default RoomsListPage;

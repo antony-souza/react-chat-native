@@ -2,15 +2,24 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Biblioteca de ícones
 
-interface HeaderProps {
-    onMenuPress: () => void;
-    onLogoutPress: () => void;
+interface IHeaderProps {
+    title: string;
 }
 
-const Header = () => {
+interface IMenuProps {
+    icon: string;
+    name: string;
+}
+
+const Header:React.FC<IHeaderProps> = ({title}) => {
+    const menuItems:IMenuProps[] = [
+        { icon: "home", name: "Criar Sala" },
+        { icon: "chatbox", name: "Salas" },
+        { icon: "person", name: "Profile" },
+    ]
 
     const onMenuPress = () => {
-        console.log("Menu Pressed");
+        
     }
 
     const onLogoutPress = () => {
@@ -22,7 +31,7 @@ const Header = () => {
             <TouchableOpacity onPress={onMenuPress}>
                 <Ionicons name="menu" size={24} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.title}>DuckChat</Text>
+            <Text style={styles.title}>{title}</Text>
             <TouchableOpacity onPress={onLogoutPress}>
                 <Ionicons name="log-out-outline" size={24} color="#fff" />
             </TouchableOpacity>

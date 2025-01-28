@@ -10,9 +10,11 @@ import {
 import LayoutPage from '../../layouts/dark-layout';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
+import Header from '../../components/header';
 
 
 const RoomSelectionPage: React.FC = () => {
+    const title = 'DuckChat';
     const [roomName, setRoomName] = useState<string>('');
 
     const router = useRouter();
@@ -30,13 +32,12 @@ const RoomSelectionPage: React.FC = () => {
     };
 
     const handleListRooms = () => {
-        router.push({
-            pathname: '/roomslist',
-        });
+        router.push('/allrooms');
     }
 
     return (
         <LayoutPage>
+            <Header title={title} />
             <View style={styles.container}>
                 <Icon name="comments" style={styles.logoContainer} />
                 <Text style={styles.title}>Bem-vindo ao DuckChat!</Text>

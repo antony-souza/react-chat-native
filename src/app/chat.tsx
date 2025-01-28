@@ -16,6 +16,7 @@ import LayoutPage from '../../layouts/dark-layout';
 import { useGlobalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { environment } from '../environment/environment';
+import { httpClient } from '../../utils/generic-request';
 
 interface IMessage {
     clientId: string;
@@ -23,6 +24,12 @@ interface IMessage {
     userImg: string;
     userName: string;
     userId: string;
+}
+
+interface IUserResponse {
+    _id: string;
+    name: string;
+    imgUrl: string;
 }
 
 const ChatPage: React.FC = () => {
@@ -36,17 +43,7 @@ const ChatPage: React.FC = () => {
     const [userImg, setUserImg] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            const storedUserId = await SecureStore.getItemAsync('userId');
-            const storedUserName = await SecureStore.getItemAsync('userName');
-            const storedUserImg = await SecureStore.getItemAsync('userImg');
-
-            setUserId(storedUserId);
-            setUserName(storedUserName);
-            setUserImg(storedUserImg);
-        };
-
-        fetchUserData();
+        findOneUser()
 
         const socketConnection = io(environment.apiUrl, {
             autoConnect: true,
@@ -63,6 +60,16 @@ const ChatPage: React.FC = () => {
             socketConnection.disconnect();
         };
     }, [])
+
+    const findOneUser = async (): Promise<IUserResponse> => {
+        const userId = await SecureStore.getItemAsync('userId');
+        const response = await httpClient.genericRequest(`${environment.getUser}/${userId}`, 'GET') as IUserResponse;
+        setUserId(response._id);
+        setUserName(response.name);
+        setUserImg(response.imgUrl);
+
+        return response;
+    }
 
     const handleSendMessage = () => {
         if (newMessage.trim() && socket && userId && userImg && userName) {
@@ -83,8 +90,28 @@ const ChatPage: React.FC = () => {
             socket.emit('leaveGroup', groupName);
             socket.disconnect();
         }
-        router.push('/rooms');
+        router.push('/allrooms');
     };
+
+    const renderMessage = ({ item }: { item: IMessage }) => (
+        <View
+            style={[
+                styles.messageContainer,
+                item.clientId === userId
+                    ? styles.messageRight
+                    : styles.messageLeft,
+            ]}
+        >
+            <View style={styles.messageHeader}>
+                <Image
+                    source={{ uri: item.userImg }}
+                    style={styles.senderPhoto}
+                />
+                <Text style={styles.senderName}>{item.userName}</Text>
+            </View>
+            <Text style={styles.messageText}>{item.message}</Text>
+        </View>
+    )
 
     return (
         <LayoutPage>
@@ -99,25 +126,7 @@ const ChatPage: React.FC = () => {
                 <View style={styles.chatBox}>
                     <FlatList
                         data={messages}
-                        renderItem={({ item }) => (
-                            <View
-                                style={[
-                                    styles.messageContainer,
-                                    item.clientId === userId
-                                        ? styles.messageRight
-                                        : styles.messageLeft,
-                                ]}
-                            >
-                                <View style={styles.messageHeader}>
-                                    <Image
-                                        source={{ uri: item.userImg }}
-                                        style={styles.senderPhoto}
-                                    />
-                                    <Text style={styles.senderName}>{item.userName}</Text>
-                                </View>
-                                <Text style={styles.messageText}>{item.message}</Text>
-                            </View>
-                        )}
+                        renderItem={renderMessage}
                         keyExtractor={(item, index) => index.toString()}
                         style={styles.messagesList}
                     />

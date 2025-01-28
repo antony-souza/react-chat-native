@@ -38,11 +38,7 @@ export default function AuthPage() {
             const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
 
             if (response) {
-                await Promise.all([
-                    SecureStore.setItemAsync("userId", response.id),
-                    SecureStore.setItemAsync("userName", response.name),
-                    SecureStore.setItemAsync("userImg", response.userImg)
-                ])
+                await SecureStore.setItemAsync("userId", response.id);
 
                 router.push("/rooms");
             }
