@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // Biblioteca de ícones
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 
 interface IHeaderProps {
     title: string;
@@ -12,18 +14,15 @@ interface IMenuProps {
 }
 
 const Header:React.FC<IHeaderProps> = ({title}) => {
-    const menuItems:IMenuProps[] = [
-        { icon: "home", name: "Criar Sala" },
-        { icon: "chatbox", name: "Salas" },
-        { icon: "person", name: "Profile" },
-    ]
+    const router = useRouter();
 
     const onMenuPress = () => {
-        
+        console.log("Menu");
     }
 
-    const onLogoutPress = () => {
-        console.log("Logout Pressed");
+    const onLogoutPress = async () => {
+        await SecureStore.deleteItemAsync("userId");
+        router.push("/");
     }
 
     return (

@@ -44,7 +44,10 @@ const ChatPage: React.FC = () => {
 
     useEffect(() => {
         findOneUser()
+        webSocketClient();
+    }, [])
 
+    const webSocketClient= async () => {
         const socketConnection = io(environment.apiUrl, {
             autoConnect: true,
         })
@@ -55,11 +58,7 @@ const ChatPage: React.FC = () => {
         socketConnection.on('msgGroup', (data: IMessage) => {
             setMessages((prevMessages) => [...prevMessages, data]);
         });
-
-        return () => {
-            socketConnection.disconnect();
-        };
-    }, [])
+    }
 
     const findOneUser = async (): Promise<IUserResponse> => {
         const userId = await SecureStore.getItemAsync('userId');
@@ -90,7 +89,7 @@ const ChatPage: React.FC = () => {
             socket.emit('leaveGroup', groupName);
             socket.disconnect();
         }
-        router.push('/allrooms');
+        router.push('/rooms');
     };
 
     const renderMessage = ({ item }: { item: IMessage }) => (

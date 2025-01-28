@@ -17,7 +17,7 @@ interface IResponseAuth {
     id: string;
     name: string;
     userImg: string;
-    status: number;
+    statusCode: number;
 }
 
 export default function AuthPage() {
@@ -37,7 +37,7 @@ export default function AuthPage() {
         try {
             const response = await httpClient.genericRequest(environment.auth, "POST", data) as IResponseAuth;
 
-            if (response) {
+            if (response.statusCode === 200) {
                 await SecureStore.setItemAsync("userId", response.id);
 
                 router.push("/rooms");
