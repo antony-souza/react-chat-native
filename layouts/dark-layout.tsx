@@ -15,9 +15,10 @@ const LayoutPage: React.FC<IDarkLayoutProps> = ({ children }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: '#121212',
         padding: 16,
+        height: '100%',
+        zIndex: 1,
     },
 });
 

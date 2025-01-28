@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Linking } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Link, useRouter } from "expo-router";
@@ -23,6 +23,10 @@ interface IResponseAuth {
 export default function AuthPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
+
+    const linkedCreateAccount = () => {
+        Linking.openURL(environment.webCreateAccount);
+    }
 
     const { control, handleSubmit, formState: { isValid } } = useForm<IAuth>({
         mode: "onChange"
@@ -113,14 +117,9 @@ export default function AuthPage() {
             </TouchableOpacity>
 
             <View style={styles.linksContainer}>
-                <Link
-                    href={"/register"}
-                    style={styles.link}
-                >Criar conta</Link>
-                {/* <Link
-                    href={"/recovery"}
-                    style={styles.link}
-                >Esqueceu a senha?</Link> */}
+                <TouchableOpacity onPress={linkedCreateAccount}>
+                    <Text style={styles.link}>Criar conta</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );

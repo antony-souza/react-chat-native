@@ -11,6 +11,7 @@ import LayoutPage from '../../layouts/dark-layout';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
 
+
 const RoomSelectionPage: React.FC = () => {
     const [roomName, setRoomName] = useState<string>('');
 
@@ -27,6 +28,12 @@ const RoomSelectionPage: React.FC = () => {
             params: { groupName: roomName },
         });
     };
+
+    const handleListRooms = () => {
+        router.push({
+            pathname: '/roomslist',
+        });
+    }
 
     return (
         <LayoutPage>
@@ -54,6 +61,12 @@ const RoomSelectionPage: React.FC = () => {
                         style={styles.button}
                     >
                         <Text style={styles.buttonText}>Criar Sala</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleListRooms}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Listar Salas</Text>
                     </TouchableOpacity>
                 </View>
             </View>
