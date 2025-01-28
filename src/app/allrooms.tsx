@@ -3,6 +3,7 @@ import LayoutPage from "../../layouts/dark-layout";
 import { useEffect, useState } from "react";
 import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import Header from "../../components/header";
 import { useRouter } from "expo-router";
 
@@ -48,6 +49,10 @@ const RoomsListPage = () => {
         <LayoutPage>
             <Header title={title} />
             <View style={styles.container}>
+                <TouchableOpacity style={styles.newRoomButton}>
+                    <Icon name="users" size={20} color="#fff" />
+                    <Text style={styles.newRoomText}>Nova Sala</Text>
+                </TouchableOpacity>
                 <FlatList
                     data={rooms}
                     renderItem={renderRoom}
@@ -63,6 +68,21 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
+    },
+    newRoomButton: {
+        backgroundColor: "#4CAF50",
+        flexDirection: "row",
+        justifyContent: "center",
+        gap: 8,
+        padding: 12,
+        borderRadius: 8,
+        alignItems: "center",
+        marginBottom: 16,
+    },
+    newRoomText: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "bold",
     },
     title: {
         fontSize: 24,
