@@ -112,6 +112,7 @@ const NewRoom = () => {
                             placeholder="Nome da Sala"
                             value={value}
                             onChangeText={onChange}
+                            placeholderTextColor="#ccc"
                         />
                     )}
                 />
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     imagePickerText: {
-        color: "#aaa",
+        color: "#ccc",
     },
     imagePreview: {
         width: 100,

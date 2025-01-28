@@ -5,7 +5,7 @@ import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Header from "../../components/header";
-import { useRouter } from "expo-router";
+import { useGlobalSearchParams, useRouter } from "expo-router";
 
 interface IRoomsList {
     id: string;
@@ -14,13 +14,16 @@ interface IRoomsList {
 }
 
 const RoomsListPage = () => {
+    const { groupId } = useGlobalSearchParams();
     const [rooms, setRooms] = useState<IRoomsList[]>([]);
+
     const title: string = "Salas";
     const router = useRouter();
 
     useEffect(() => {
         handleListRooms();
     }, []);
+
 
     const handleListRooms = async (): Promise<IRoomsList[]> => {
         const response = await httpClient.genericRequest(environment.finAllChats, "GET") as IRoomsList[];
@@ -29,10 +32,10 @@ const RoomsListPage = () => {
         return response;
     };
 
-    const handlePathChat = (groupName: string) => {
+    const handlePathChat = (groupName: string, groupId:string) => {
         router.push({
             pathname: "/chat",
-            params: { groupName },
+            params: { groupName, groupId: groupId },
         });
     };
 
@@ -41,7 +44,7 @@ const RoomsListPage = () => {
     }
 
     const renderRoom = ({ item }: { item: IRoomsList }) => (
-        <TouchableOpacity onPress={() => handlePathChat(item.name)} style={styles.card}>
+        <TouchableOpacity onPress={() => handlePathChat(item.name, item.id)} style={styles.card}>
             <Image source={{ uri: item.imgUrl }} style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.roomName}>{item.name}</Text>
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
         padding: 16,
     },
     newRoomButton: {
-        backgroundColor: "#4CAF50",
+        backgroundColor: "#6200EE",
         flexDirection: "row",
         justifyContent: "center",
         gap: 8,

@@ -7,7 +7,6 @@ import {
     StyleSheet,
     FlatList,
     Image,
-    ToastAndroid
 } from 'react-native';
 import io from 'socket.io-client';
 import * as SecureStore from 'expo-secure-store';
@@ -33,7 +32,7 @@ interface IUserResponse {
 }
 
 const ChatPage: React.FC = () => {
-    const { groupName } = useGlobalSearchParams();
+    const { groupName, groupId } = useGlobalSearchParams(); // groupId é o ID da sala
     const router = useRouter();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [newMessage, setNewMessage] = useState<string>('');
@@ -43,22 +42,38 @@ const ChatPage: React.FC = () => {
     const [userImg, setUserImg] = useState<string | null>(null);
 
     useEffect(() => {
-        findOneUser()
+        findOneUser();
+        handleHistoryMessages();
         webSocketClient();
-    }, [])
+    }, []);
 
-    const webSocketClient= async () => {
+    const handleHistoryMessages = async () => {
+        const chatId = groupId; 
+        const response = await httpClient.genericRequest(`${environment.historyMessages}/${chatId}`, "GET");
+        if (response && Array.isArray(response)) {
+            const mappedMessages = response.map((msg: any) => ({
+                clientId: msg._id,
+                message: msg.message,
+                userImg: msg.userImgUrl,
+                userName: msg.userName,
+                userId: msg.userId,
+            }));
+            setMessages(mappedMessages);
+        }
+    };
+
+    const webSocketClient = async () => {
         const socketConnection = io(environment.apiUrl, {
             autoConnect: true,
-        })
+        });
         setSocket(socketConnection);
 
-        socketConnection.emit('joinGroup',userName, groupName);
+        socketConnection.emit('joinGroup', userName, groupName);
 
         socketConnection.on('msgGroup', (data: IMessage) => {
             setMessages((prevMessages) => [...prevMessages, data]);
         });
-    }
+    };
 
     const findOneUser = async (): Promise<IUserResponse> => {
         const userId = await SecureStore.getItemAsync('userId');
@@ -68,7 +83,7 @@ const ChatPage: React.FC = () => {
         setUserImg(response.imgUrl);
 
         return response;
-    }
+    };
 
     const handleSendMessage = () => {
         if (newMessage.trim() && socket && userId && userImg && userName) {
@@ -79,7 +94,7 @@ const ChatPage: React.FC = () => {
                 userId: userId,
                 userName: userName,
             };
-            socket.emit('sendMessage', { groupName: groupName, ...messageData });
+            socket.emit('sendMessage', { groupName, groupId, ...messageData });
             setNewMessage('');
         }
     };
@@ -96,9 +111,7 @@ const ChatPage: React.FC = () => {
         <View
             style={[
                 styles.messageContainer,
-                item.clientId === userId
-                    ? styles.messageRight
-                    : styles.messageLeft,
+                item.clientId === userId ? styles.messageRight : styles.messageLeft,
             ]}
         >
             <View style={styles.messageHeader}>
@@ -110,7 +123,7 @@ const ChatPage: React.FC = () => {
             </View>
             <Text style={styles.messageText}>{item.message}</Text>
         </View>
-    )
+    );
 
     return (
         <LayoutPage>
@@ -156,7 +169,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: '#1e1e1e', 
+        backgroundColor: '#1e1e1e',
         borderBottomWidth: 1,
         borderBottomColor: '#333',
     },
@@ -164,14 +177,14 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     groupName: {
-        color: '#fff', 
+        color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
     },
     chatBox: {
         flex: 1,
         margin: 10,
-        padding: 10, 
+        padding: 10,
         borderRadius: 10,
     },
     messagesList: {
@@ -186,11 +199,11 @@ const styles = StyleSheet.create({
     },
     messageLeft: {
         alignSelf: 'flex-start',
-        backgroundColor: '#333', 
+        backgroundColor: '#333',
     },
     messageRight: {
         alignSelf: 'flex-end',
-        backgroundColor: '#6200EE', 
+        backgroundColor: '#6200EE',
     },
     messageHeader: {
         flexDirection: 'row',
