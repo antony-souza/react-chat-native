@@ -32,7 +32,7 @@ interface IUserResponse {
 }
 
 const ChatPage: React.FC = () => {
-    const { groupName, groupId } = useGlobalSearchParams(); // groupId é o ID da sala
+    const { groupName, groupId } = useGlobalSearchParams();
     const router = useRouter();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [newMessage, setNewMessage] = useState<string>('');

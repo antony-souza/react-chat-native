@@ -8,14 +8,15 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import LayoutPage from '../../layouts/dark-layout';
 import { Ionicons } from '@expo/vector-icons';
 import { Controller, useForm } from 'react-hook-form';
 import * as ImagePicker from 'expo-image-picker';
 import * as SecureStore from "expo-secure-store";
-import { InputCase } from '../../components/input';
+
 import { httpClient } from '../../utils/generic-request';
 import { environment } from '../environment/environment';
+import LayoutPage from '../../layouts/dark-layout';
+import { InputCase } from '../../components/input';
 
 interface ICreateAccount {
     name: string;

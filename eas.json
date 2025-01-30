@@ -14,9 +14,15 @@
         "buildType": "apk"
       }
     },
+    "preview2": {
+      "distribution": "internal",
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
     "production": {
       "autoIncrement": true
-    }  
+    }
   },
   "submit": {
     "production": {}
