@@ -8,6 +8,7 @@ import Header from "../../components/header";
 import { useGlobalSearchParams, useRouter } from "expo-router";
 import * as Security from 'expo-secure-store'
 import LayoutPage from "../../layouts/dark-layout";
+import { set } from "react-hook-form";
 
 interface IRoomsList {
   id: string;
@@ -28,7 +29,7 @@ const RoomsListPage = () => {
   }, []);
 
   const userJoinChat = async (groupId: string) => {
-    const userId = await Security.getItemAsync("userId");
+    const userId = await Security.getItemAsync('userId')
     const response = await httpClient.genericRequest(`${environment.joinChat}/${groupId}/${userId}`, "PUT");
 
     return response;
@@ -49,7 +50,8 @@ const RoomsListPage = () => {
   };
 
   const handleListRooms = async (): Promise<IRoomsList[]> => {
-    const response = await httpClient.genericRequest(environment.finAllChats, "GET") as IRoomsList[];
+    const userId = await Security.getItemAsync('userId')
+    const response = await httpClient.genericRequest(`${environment.findAllChatsByUsers}/${userId}`, "GET") as IRoomsList[];
     setRooms(response);
     return response;
   };
@@ -62,7 +64,7 @@ const RoomsListPage = () => {
       }));
     });
   };
-  
+
   const handlePathNewRoom = () => {
     router.push("/new_room");
   };
