@@ -1,1 +1,3 @@
-# react-native-app
+# Duck Chat
+
+Tendo como base WebSockets 
