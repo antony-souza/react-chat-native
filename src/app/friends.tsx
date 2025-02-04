@@ -6,7 +6,7 @@ import { environment } from "../environment/environment";
 import Header from "../../components/header";
 import LayoutPage from "../../layouts/dark-layout";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { set } from "react-hook-form";
+import { useRouter } from "expo-router";
 
 interface IFriends {
     id: string;
@@ -17,6 +17,7 @@ interface IFriends {
 
 const FriendsPage = () => {
     const title = "Amigos";
+    const router = useRouter()
     const [friends, setFriends] = useState<IFriends[]>([]);
     const [requestsFriends, setRequestsFriends] = useState<IFriends[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -111,6 +112,34 @@ const FriendsPage = () => {
         }
     };
 
+    const goToFriendChat = async (groupName: string, friendId: string, friendImgUrl: string) => {
+        const userId = await Security.getItemAsync('userId') as string;
+        const formData = new FormData();
+
+        formData.append("name", groupName);
+        formData.append("users", userId);
+        formData.append("private", "true");
+        formData.append("users", friendId);
+        const file = {
+            uri: friendImgUrl,
+            name: `chat.${friendImgUrl.split('.').pop()}`,
+            type: `image/${friendImgUrl.split('.').pop()}`,
+        };
+
+        formData.append("imgUrl", file as any);
+
+        const response = await httpClient.genericRequest(environment.createRoom, "POST", formData);
+        if (response.statusCode === 400 || response.statusCode === 500 || response.statusCode === 501) {
+            Alert.alert("Falha ao criar sala.");
+            return;
+        }
+        
+        router.push({
+            pathname: "/chat",
+            params: { groupName: groupName, groupId: `${friendId}-${userId}` },
+        });
+    };
+
     const renderAllFriends = ({ item }: { item: IFriends }) => (
         <View style={styles.card}>
             <Image
@@ -119,11 +148,13 @@ const FriendsPage = () => {
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.requesterUserName}</Text>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => goToFriendChat(item.requesterUserName, item.requesterUserId, item.requesterUserImg)}>
                 <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => removeFriend(item.id)}>
-                <Icon name="user-times" size={24} color="red" style={styles.icon} />
+                {loading ?
+                    <ActivityIndicator size="small" color="#6200EE" />
+                    : <Icon name="user-minus" size={24} color="red" style={styles.icon} />}
             </TouchableOpacity>
         </View>
     );

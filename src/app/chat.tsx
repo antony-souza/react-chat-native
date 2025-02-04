@@ -58,7 +58,7 @@ const ChatPage: React.FC = () => {
                 userName: msg.userName,
                 userId: msg.userId,
             }));
-            setMessages(mappedMessages);
+            setMessages(mappedMessages)
         }
     };
 
