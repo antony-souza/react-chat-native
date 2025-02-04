@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator, Alert } from "react-native";
 import * as Security from 'expo-secure-store';
 import { httpClient } from "../../utils/generic-request";
 import { environment } from "../environment/environment";
 import Header from "../../components/header";
 import LayoutPage from "../../layouts/dark-layout";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { set } from "react-hook-form";
 
 interface IFriends {
     id: string;
@@ -31,9 +32,10 @@ const FriendsPage = () => {
             if (!userId) return;
 
             const response = await httpClient.genericRequest(`${environment.listAllFriendRequest}/${userId}`, "GET") as IFriends[];
+
             setRequestsFriends(response);
         } catch (error) {
-            console.error("Erro ao buscar solicitações de amizade:", error);
+            Alert.alert("Erro ao buscar solicitações de amizade");
         } finally {
             setLoading(false);
         }
@@ -45,32 +47,59 @@ const FriendsPage = () => {
             if (!userId) return;
 
             const response = await httpClient.genericRequest(`${environment.findAllFriends}/${userId}`, "GET") as IFriends[];
+
+            if(!response) {
+                Alert.alert("Falha ao buscar amigos");
+                return;
+            }
+
             setFriends(response);
         } catch (error) {
-            console.error("Erro ao buscar amigos:", error);
+            Alert.alert("Erro ao buscar amigos");
         } finally {
             setLoading(false);
         }
     };
 
-    const acceptFriendRequest = async (id:string) => {
+    const acceptFriendRequest = async (id: string) => {
         try {
             const friendId = await Security.getItemAsync('userId');
             if (!friendId) return;
 
             const response = await httpClient.genericRequest(`${environment.acceptFriendRequest}/${friendId}/${id}`, "PUT");
-            console.log( response);
+            if(!response) {
+                Alert.alert("Falha ao aceitar solicitação de amizade");
+                return;
+            }
+
             listAllFriendRequest();
             fetchFriends();
         } catch (error) {
-            console.error("Erro ao aceitar solicitação de amizade:", error);
+            Alert.alert("Erro ao aceitar solicitação de amizade");
         }
     }
 
+    const rejectFriendRequest = async (id: string) => {
+        try {
+            setLoading(true);
+            const friendId = await Security.getItemAsync('userId');
+            if (!friendId) return;
+
+            await httpClient.genericRequest(`${environment.rejectFriendRequest}/${friendId}/${id}`, "PUT");
+
+            listAllFriendRequest();
+        } catch (error) {
+            Alert.alert("Falha ao rejeitar solicitação de amizade");
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
     const renderAllFriends = ({ item }: { item: IFriends }) => (
         <TouchableOpacity style={styles.card}>
-            <Image 
-                source={{ uri: item.requesterUserImg }} 
+            <Image
+                source={{ uri: item.requesterUserImg }}
                 style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.requesterUserName}</Text>
@@ -89,7 +118,7 @@ const FriendsPage = () => {
                 <TouchableOpacity onPress={() => acceptFriendRequest(item.id)}>
                     <Icon name="user-check" size={24} color="green" style={styles.icon} />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => rejectFriendRequest(item.id)}>
                     <Icon name="user-times" size={24} color="red" style={styles.icon} />
                 </TouchableOpacity>
             </View>
