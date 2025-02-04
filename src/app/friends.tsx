@@ -48,7 +48,7 @@ const FriendsPage = () => {
 
             const response = await httpClient.genericRequest(`${environment.findAllFriends}/${userId}`, "GET") as IFriends[];
 
-            if(!response) {
+            if (!response) {
                 Alert.alert("Falha ao buscar amigos");
                 return;
             }
@@ -67,7 +67,7 @@ const FriendsPage = () => {
             if (!friendId) return;
 
             const response = await httpClient.genericRequest(`${environment.acceptFriendRequest}/${friendId}/${id}`, "PUT");
-            if(!response) {
+            if (!response) {
                 Alert.alert("Falha ao aceitar solicitação de amizade");
                 return;
             }
@@ -96,16 +96,36 @@ const FriendsPage = () => {
         }
     };
 
+    const removeFriend = async (id: string) => {
+        try {
+            setLoading(true);
+
+            await httpClient.genericRequest(`${environment.removeFriend}/${id}`, "PUT");
+
+            fetchFriends();
+        } catch (error) {
+            Alert.alert("Falha ao remover amigo");
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
     const renderAllFriends = ({ item }: { item: IFriends }) => (
-        <TouchableOpacity style={styles.card}>
+        <View style={styles.card}>
             <Image
                 source={{ uri: item.requesterUserImg }}
                 style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.requesterUserName}</Text>
             </View>
-            <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
-        </TouchableOpacity>
+            <TouchableOpacity>
+                <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => removeFriend(item.id)}>
+                <Icon name="user-times" size={24} color="red" style={styles.icon} />
+            </TouchableOpacity>
+        </View>
     );
 
     const renderRequestsFriends = ({ item }: { item: IFriends }) => (
