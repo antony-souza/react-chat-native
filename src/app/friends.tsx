@@ -15,7 +15,7 @@ interface IFriends {
 }
 
 const FriendsPage = () => {
-    const title = "Amigos / Solicitações";
+    const title = "Amigos";
     const [friends, setFriends] = useState<IFriends[]>([]);
     const [requestsFriends, setRequestsFriends] = useState<IFriends[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -53,24 +53,47 @@ const FriendsPage = () => {
         }
     };
 
+    const acceptFriendRequest = async (id:string) => {
+        try {
+            const friendId = await Security.getItemAsync('userId');
+            if (!friendId) return;
+
+            const response = await httpClient.genericRequest(`${environment.acceptFriendRequest}/${friendId}/${id}`, "PUT");
+            console.log( response);
+            listAllFriendRequest();
+            fetchFriends();
+        } catch (error) {
+            console.error("Erro ao aceitar solicitação de amizade:", error);
+        }
+    }
+
     const renderAllFriends = ({ item }: { item: IFriends }) => (
         <TouchableOpacity style={styles.card}>
-            <Image source={{ uri: item.requesterUserImg }} style={styles.image} />
+            <Image 
+                source={{ uri: item.requesterUserImg }} 
+                style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.requesterUserName}</Text>
             </View>
-            <Icon name="comment-dots" size={24} color="#fff" style={styles.Icon} />
+            <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
         </TouchableOpacity>
     );
 
     const renderRequestsFriends = ({ item }: { item: IFriends }) => (
-        <TouchableOpacity style={styles.card}>
+        <View style={styles.card}>
             <Image source={{ uri: item.requesterUserImg }} style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.requesterUserName}</Text>
             </View>
-            <Icon name="user-plus" size={24} color="#fff" style={styles.Icon}/>
-        </TouchableOpacity>
+            <View style={styles.actions}>
+                <TouchableOpacity onPress={() => acceptFriendRequest(item.id)}>
+                    <Icon name="user-check" size={24} color="green" style={styles.icon} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <Icon name="user-times" size={24} color="red" style={styles.icon} />
+                </TouchableOpacity>
+            </View>
+        </View>
     );
 
     return (
@@ -127,6 +150,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 5,
         elevation: 5,
+        justifyContent: "space-between",
     },
     image: {
         width: 60,
@@ -156,10 +180,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         color: "#fff",
     },
-    Icon: {
-        marginRight: 15,
-
-    }
+    actions: {
+        flexDirection: "row",
+        gap: 10,
+    },
+    icon: {
+        marginHorizontal: 8,
+    },
 });
 
 export default FriendsPage;
