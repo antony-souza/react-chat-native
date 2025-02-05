@@ -8,6 +8,18 @@ import LayoutPage from "../../layouts/dark-layout";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
 
+
+interface IFriend{
+    id: string,
+    name: string,
+    image: string,
+}
+
+interface IFriendResponse{
+    friend: IFriend,
+    id: string,
+}
+
 interface IFriends {
     id: string;
     requesterUserId: string;
@@ -18,7 +30,7 @@ interface IFriends {
 const FriendsPage = () => {
     const title = "Amigos";
     const router = useRouter()
-    const [friends, setFriends] = useState<IFriends[]>([]);
+    const [friends, setFriends] = useState<IFriend[]>([]);
     const [requestsFriends, setRequestsFriends] = useState<IFriends[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -47,14 +59,15 @@ const FriendsPage = () => {
             const userId = await Security.getItemAsync('userId');
             if (!userId) return;
 
-            const response = await httpClient.genericRequest(`${environment.findAllFriends}/${userId}`, "GET") as IFriends[];
+            const response = await httpClient.genericRequest(`${environment.findAllFriends}/${userId}`, "GET") as IFriendResponse[];
 
             if (!response) {
                 Alert.alert("Falha ao buscar amigos");
                 return;
             }
-
-            setFriends(response);
+            
+            const friends = response.map(item => item.friend);
+            setFriends(friends);
         } catch (error) {
             Alert.alert("Erro ao buscar amigos");
         } finally {
@@ -140,15 +153,15 @@ const FriendsPage = () => {
         });
     };
 
-    const renderAllFriends = ({ item }: { item: IFriends }) => (
+    const renderAllFriends = ({ item }: { item: IFriend }) => (
         <View style={styles.card}>
             <Image
-                source={{ uri: item.requesterUserImg }}
+                source={{ uri: item.image }}
                 style={styles.image} />
             <View style={styles.info}>
-                <Text style={styles.friendName}>{item.requesterUserName}</Text>
+                <Text style={styles.friendName}>{item.name}</Text>
             </View>
-            <TouchableOpacity onPress={() => goToFriendChat(item.requesterUserName, item.requesterUserId, item.requesterUserImg)}>
+            <TouchableOpacity onPress={() => goToFriendChat(item.name, item.id, item.image)}>
                 <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => removeFriend(item.id)}>
@@ -267,6 +280,6 @@ const styles = StyleSheet.create({
     icon: {
         marginHorizontal: 8,
     },
-});
+})
 
 export default FriendsPage;
