@@ -7,6 +7,7 @@ import Header from "../../components/header";
 import LayoutPage from "../../layouts/dark-layout";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
+import TabsNavigation from "../../components/tabs";
 
 
 interface IFriend{
@@ -221,6 +222,7 @@ const FriendsPage = () => {
                     <Text style={styles.noFriendsText}>Nenhum amigo encontrado</Text>
                 )}
             </View>
+            <TabsNavigation />
         </LayoutPage>
     );
 };

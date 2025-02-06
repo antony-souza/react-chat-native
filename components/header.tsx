@@ -8,16 +8,11 @@ interface IHeaderProps {
     title: string;
 }
 
-interface IMenuProps {
-    icon: string;
-    name: string;
-}
-
 const Header:React.FC<IHeaderProps> = ({title}) => {
     const router = useRouter();
 
-    const onMenuPress = () => {
-        console.log("Menu");
+    const onBack = () => {
+        router.back()
     }
 
     const onLogoutPress = async () => {
@@ -27,8 +22,8 @@ const Header:React.FC<IHeaderProps> = ({title}) => {
 
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={onMenuPress}>
-                <Ionicons name="menu" size={24} color="#fff" />
+            <TouchableOpacity onPress={onBack}>
+                <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>
             <TouchableOpacity onPress={onLogoutPress}>

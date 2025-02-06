@@ -40,7 +40,7 @@ export default function AuthPage() {
             if (response.statusCode === 200) {
                 await SecureStore.setItemAsync("userId", response.id);
 
-                router.push("/friends");
+                router.push("/rooms");
             }
         } catch (error) {
             console.error("Erro ao autenticar:", error);

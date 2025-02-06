@@ -9,6 +9,7 @@ import { useGlobalSearchParams, useRouter } from "expo-router";
 import * as Security from 'expo-secure-store'
 import LayoutPage from "../../layouts/dark-layout";
 import { set } from "react-hook-form";
+import TabsNavigation from "../../components/tabs";
 
 interface IRoomsList {
   id: string;
@@ -98,6 +99,7 @@ const RoomsListPage = () => {
           contentContainerStyle={styles.list}
         />
       </View>
+      <TabsNavigation />
     </LayoutPage>
   );
 };
