@@ -12,14 +12,11 @@ import TabsNavigation from "../../components/tabs";
 
 interface IFriend {
     id: string,
+    userId: string,
     name: string,
     image: string,
 }
 
-interface IFriendResponse {
-    friend: IFriend,
-    id: string,
-}
 
 interface IFriends {
     id: string;
@@ -60,15 +57,14 @@ const FriendsPage = () => {
             const userId = await Security.getItemAsync('userId');
             if (!userId) return;
 
-            const response = await httpClient.genericRequest(`${environment.findAllFriends}/${userId}`, "GET") as IFriendResponse[];
+            const response = await httpClient.genericRequest(`${environment.findAllFriends}/${userId}`, "GET") as IFriend[];
 
             if (!response) {
                 Alert.alert("Falha ao buscar amigos");
                 return;
             }
 
-            const friends = response.map(item => item.friend);
-            setFriends(friends);
+            setFriends(response);
         } catch (error) {
             Alert.alert("Erro ao buscar amigos");
         } finally {
@@ -111,12 +107,12 @@ const FriendsPage = () => {
         }
     };
 
-    const removeFriend = async (id: string) => {
+    const removeFriend = async (id:string) => {
         try {
             setLoading(true);
 
-            await httpClient.genericRequest(`${environment.removeFriend}/${id}`, "PUT");
-
+            const response = await httpClient.genericRequest(`${environment.removeFriend}/${id}`, "PUT");
+            console.log(response);
             fetchFriends();
         } catch (error) {
             Alert.alert("Falha ao remover amigo");
@@ -156,19 +152,19 @@ const FriendsPage = () => {
 
     const renderAllFriends = ({ item }: { item: IFriend }) => (
         <View style={styles.card}>
-            <Image
-                source={{ uri: item.image }}
-                style={styles.image} />
+            <Image source={{ uri: item.image }} style={styles.image} />
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.name}</Text>
             </View>
-            <TouchableOpacity onPress={() => goToFriendChat(item.name, item.id, item.image)}>
+            <TouchableOpacity onPress={() => goToFriendChat(item.name, item.userId, item.image)}>
                 <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => removeFriend(item.id)}>
-                {loading ?
+                {loading ? (
                     <ActivityIndicator size="small" color="#6200EE" />
-                    : <Icon name="user-minus" size={24} color="red" style={styles.icon} />}
+                ) : (
+                    <Icon name="user-minus" size={24} color="red" style={styles.icon} />
+                )}
             </TouchableOpacity>
         </View>
     );
