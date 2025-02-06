@@ -10,13 +10,13 @@ import { useRouter } from "expo-router";
 import TabsNavigation from "../../components/tabs";
 
 
-interface IFriend{
+interface IFriend {
     id: string,
     name: string,
     image: string,
 }
 
-interface IFriendResponse{
+interface IFriendResponse {
     friend: IFriend,
     id: string,
 }
@@ -66,7 +66,7 @@ const FriendsPage = () => {
                 Alert.alert("Falha ao buscar amigos");
                 return;
             }
-            
+
             const friends = response.map(item => item.friend);
             setFriends(friends);
         } catch (error) {
@@ -147,7 +147,7 @@ const FriendsPage = () => {
             Alert.alert("Falha ao criar sala.");
             return;
         }
-        
+
         router.push({
             pathname: "/chat",
             params: { groupName: groupName, groupId: `${friendId}-${userId}` },

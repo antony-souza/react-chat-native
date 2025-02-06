@@ -15,6 +15,7 @@ const TabsNavigation = () => {
         { icon: 'user', route: '/profile', name: 'Perfil' },
         { icon: 'home', route: '/rooms', name: 'Salas' },
         { icon: 'address-book', route: '/friends', name: 'Amigos' },
+        { icon: 'user-plus', route: '/add_friends', name: 'Novo Amigo' },
     ]);
 
 
