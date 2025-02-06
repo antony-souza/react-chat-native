@@ -32,7 +32,7 @@ interface IUserResponse {
 }
 
 const ChatPage: React.FC = () => {
-    const { groupName, groupId } = useGlobalSearchParams();
+    const { groupName, groupId } = useGlobalSearchParams() as { groupName: string; groupId: string };
     const router = useRouter();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [newMessage, setNewMessage] = useState<string>('');
@@ -104,7 +104,7 @@ const ChatPage: React.FC = () => {
             socket.emit('leaveGroup', groupName);
             socket.disconnect();
         }
-        router.push('/rooms');
+        router.back()
     };
 
     const renderMessage = ({ item }: { item: IMessage }) => (
@@ -126,15 +126,8 @@ const ChatPage: React.FC = () => {
     );
 
     return (
-        <LayoutPage>
+        <LayoutPage headerTitle={groupName} onBack={handleLeaveGroup}>
             <View style={styles.container}>
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={handleLeaveGroup} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color="#fff" />
-                    </TouchableOpacity>
-                    <Text style={styles.groupName}>{groupName}</Text>
-                    <Text>{''}</Text>
-                </View>
                 <View style={styles.chatBox}>
                     <FlatList
                         data={messages}

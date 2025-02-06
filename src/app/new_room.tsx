@@ -85,8 +85,7 @@ const NewRoom = () => {
     };
 
     return (
-        <LayoutPage>
-            <Header title={title} />
+        <LayoutPage headerTitle={title}>
             <View style={styles.container}>
                 <Controller
                     control={control}

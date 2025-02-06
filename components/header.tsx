@@ -6,23 +6,28 @@ import * as SecureStore from "expo-secure-store";
 
 interface IHeaderProps {
     title: string;
+    arrowBackFunction?: () => void
 }
 
-const Header:React.FC<IHeaderProps> = ({title}) => {
+const Header:React.FC<IHeaderProps> = ({title, arrowBackFunction}) => {
     const router = useRouter();
-
-    const onBack = () => {
-        router.back()
-    }
 
     const onLogoutPress = async () => {
         await SecureStore.deleteItemAsync("userId");
         router.push("/");
     }
 
+    const handleBackPage = () => {
+        if (arrowBackFunction) {
+            arrowBackFunction();
+        } else {
+            router.back();
+        }
+    }
+
     return (
         <View style={styles.header}>
-            <TouchableOpacity onPress={onBack}>
+            <TouchableOpacity onPress={handleBackPage}>
                 <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
             <Text style={styles.title}>{title}</Text>

@@ -1,6 +1,7 @@
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useNavigation, useRouter } from 'expo-router';
+import {useRouter } from 'expo-router';
+import { useState } from 'react';
 
 interface ITabsMenu {
     icon: string;
@@ -10,25 +11,22 @@ interface ITabsMenu {
 
 const TabsNavigation = () => {
     const router = useRouter();
-
-    const tabsMenu:ITabsMenu[] = [
+    const [menu, setMenu] = useState<ITabsMenu[]>([
+        { icon: 'user', route: '/profile', name: 'Perfil' },
         { icon: 'home', route: '/rooms', name: 'Salas' },
-        { icon: 'user-friends', route: '/friends', name: 'Amigos' },
-    ]
+        { icon: 'address-book', route: '/friends', name: 'Amigos' },
+    ]);
 
-    const goToRooms = () => {
-        router.push('/rooms');
-    }
 
     return (
         <View style={styles.container}>
-            {tabsMenu.map((tab: ITabsMenu) => (
+            {menu.map((tab: ITabsMenu) => (
                 <TouchableOpacity
                     key={tab.route}
                     style={styles.tab}
-                    onPress={() => router.push(tab.route)}
+                    onPress={() => router.navigate(tab.route)}
                 >
-                    <Icon name={tab.icon} size={20} color="#fff" />
+                    <Icon name={tab.icon} solid size={20} color="#fff" />
                     <Text style={styles.tabText}>{tab.name}</Text>
                 </TouchableOpacity>
             ))}

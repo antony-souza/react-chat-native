@@ -191,8 +191,7 @@ const FriendsPage = () => {
     );
 
     return (
-        <LayoutPage>
-            <Header title={title} />
+        <LayoutPage headerTitle={title} tabs={true}>
             <View style={styles.container}>
                 <Text style={styles.sectionTitle}>Solicitações de Amizade</Text>
                 {loading ? (
@@ -222,7 +221,6 @@ const FriendsPage = () => {
                     <Text style={styles.noFriendsText}>Nenhum amigo encontrado</Text>
                 )}
             </View>
-            <TabsNavigation />
         </LayoutPage>
     );
 };

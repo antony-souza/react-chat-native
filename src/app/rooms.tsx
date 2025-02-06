@@ -85,8 +85,7 @@ const RoomsListPage = () => {
   );
 
   return (
-    <LayoutPage>
-      <Header title={title} />
+    <LayoutPage headerTitle={title} tabs={true}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.newRoomButton} onPress={handlePathNewRoom}>
           <Icon name="users" size={20} color="#fff" />
@@ -99,7 +98,6 @@ const RoomsListPage = () => {
           contentContainerStyle={styles.list}
         />
       </View>
-      <TabsNavigation />
     </LayoutPage>
   );
 };
