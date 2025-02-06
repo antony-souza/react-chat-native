@@ -140,6 +140,7 @@ const ChatPage: React.FC = () => {
                     <TextInput
                         style={styles.input}
                         placeholder="Digite sua mensagem"
+                        placeholderTextColor={'#999'}
                         value={newMessage}
                         onChangeText={setNewMessage}
                     />
