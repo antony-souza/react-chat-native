@@ -17,10 +17,10 @@ interface IRoomsList {
   imgUrl: string;
 }
 
-const RoomsListPage = () => {
+const ChatsPrivate = () => {
   const [rooms, setRooms] = useState<IRoomsList[]>([]);
   const [unreadMessages, setUnreadMessages] = useState<{ [key: string]: number }>({});
-  const title: string = "Salas";
+  const title: string = "Conversas";
   const router = useRouter();
   const socket = io(environment.apiUrl);
 
@@ -52,7 +52,7 @@ const RoomsListPage = () => {
 
   const handleListRooms = async (): Promise<IRoomsList[]> => {
     const userId = await Security.getItemAsync('userId')
-    const response = await httpClient.genericRequest(`${environment.findAllChatsByUsers}/${userId}`, "GET") as IRoomsList[];
+    const response = await httpClient.genericRequest(`${environment.findAllChatsPrivateByUsers}/${userId}`, "GET") as IRoomsList[];
     setRooms(response);
     return response;
   };
@@ -64,10 +64,6 @@ const RoomsListPage = () => {
         [data.groupId]: (prev[data.groupId] || 0) + 1,
       }));
     });
-  };
-
-  const handlePathNewRoom = () => {
-    router.push("/new_room");
   };
 
   const renderRoom = ({ item }: { item: IRoomsList }) => (
@@ -87,10 +83,6 @@ const RoomsListPage = () => {
   return (
     <LayoutPage headerTitle={title} tabs={true}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.newRoomButton} onPress={handlePathNewRoom}>
-          <Icon name="users" size={20} color="#fff" />
-          <Text style={styles.newRoomText}>Nova Sala</Text>
-        </TouchableOpacity>
         <FlatList
           data={rooms}
           renderItem={renderRoom}
@@ -169,4 +161,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RoomsListPage;
+export default ChatsPrivate;

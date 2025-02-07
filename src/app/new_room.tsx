@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity, TextInput, StyleSheet, Image, ActivityIndicator } from "react-native";
+import { Text, View, TouchableOpacity, TextInput, StyleSheet, Image, ActivityIndicator, Alert } from "react-native";
 import LayoutPage from "../../layouts/dark-layout";
 import Header from "../../components/header";
 import { Controller, useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ const NewRoom = () => {
     const { control, handleSubmit, setValue, watch, formState: { isValid } } = useForm<INewRoom>();
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
-    const title = "Nova Sala";
+    const title = "Novo Grupo";
     const imgUrl = watch("imgUrl");
     const router = useRouter()
 
@@ -45,23 +45,22 @@ const NewRoom = () => {
             console.log(createRoom);
             if (createRoom.statusCode === 400 || createRoom.statusCode === 500 || createRoom.statusCode === 501 || createRoom.statusCode === 404) {
                 setLoading(false);
-                alert("Falha ao criar sala.");
+                Alert.alert("Falha ao criar sala.");
                 return;
             }
 
             setLoading(false);
-            alert("Sala criada com sucesso.");
-            router.push("/rooms");
+            Alert.alert("Sala criada com sucesso.");
+            router.push("/group");
 
         } catch (error) {
-            console.error("Erro ao criar sala:", error);
-            alert("Falha ao criar sala.");
+            Alert.alert("Falha ao criar sala.");
         }
 
     };
 
     const handleCancel = () => {
-        router.push("/rooms");
+        router.push("/group");
     }
 
     const handlePickImage = async () => {
@@ -104,11 +103,11 @@ const NewRoom = () => {
                 <Controller
                     control={control}
                     name="name"
-                    rules={{ required: "Nome da sala é obrigatório." }}
+                    rules={{ required: "Nome do grupo é obrigatório." }}
                     render={({ field: { onChange, value }, fieldState: { error } }) => (
                         <TextInput
                             style={[styles.input, error ? styles.inputError : {}]}
-                            placeholder="Nome da Sala"
+                            placeholder="Nome do Grupo"
                             value={value}
                             onChangeText={onChange}
                             placeholderTextColor="#ccc"
@@ -123,7 +122,7 @@ const NewRoom = () => {
                     {loading ? (
                         <ActivityIndicator size="small" color="#fff" />
                     ) : (
-                        <Text style={styles.buttonText}>Criar Sala</Text>
+                        <Text style={styles.buttonText}>Criar Grupo</Text>
                     )}
                 </TouchableOpacity>
                 <TouchableOpacity

@@ -13,7 +13,8 @@ const TabsNavigation = () => {
     const router = useRouter();
     const [menu, setMenu] = useState<ITabsMenu[]>([
         { icon: 'user', route: '/profile', name: 'Perfil' },
-        { icon: 'home', route: '/rooms', name: 'Salas' },
+        { icon: 'home', route: '/group', name: 'Grupos' },
+        { icon: 'comments', route: '/chats_private', name: 'Conversas' },
         { icon: 'address-book', route: '/friends', name: 'Amigos' },
         { icon: 'user-plus', route: '/add_friends', name: 'Novo Amigo' },
     ]);

@@ -107,7 +107,7 @@ const FriendsPage = () => {
         }
     };
 
-    const removeFriend = async (id:string) => {
+    const removeFriend = async (id: string) => {
         try {
             setLoading(true);
 
@@ -120,6 +120,19 @@ const FriendsPage = () => {
         finally {
             setLoading(false);
         }
+    }
+
+    const confirmRemoveFriend = async (id: string) => {
+        Alert.alert(
+            "Remover amigo",
+            "Deseja realmente remover este amigo?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Remover", onPress: () => removeFriend(id) }
+            ]);
     };
 
     const goToFriendChat = async (groupName: string, friendId: string, friendImgUrl: string) => {
@@ -159,7 +172,7 @@ const FriendsPage = () => {
             <TouchableOpacity onPress={() => goToFriendChat(item.name, item.userId, item.image)}>
                 <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => removeFriend(item.id)}>
+            <TouchableOpacity onPress={() => confirmRemoveFriend(item.id)}>
                 {loading ? (
                     <ActivityIndicator size="small" color="#6200EE" />
                 ) : (
