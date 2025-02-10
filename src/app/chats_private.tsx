@@ -19,10 +19,8 @@ interface IRoomsList {
 
 const ChatsPrivate = () => {
   const [rooms, setRooms] = useState<IRoomsList[]>([]);
-  const [unreadMessages, setUnreadMessages] = useState<{ [key: string]: number }>({});
   const title: string = "Conversas";
   const router = useRouter();
-  const socket = io(environment.apiUrl);
 
   useEffect(() => {
     handleListRooms();
@@ -37,11 +35,6 @@ const ChatsPrivate = () => {
 
   const handlePathChat = async (groupName: string, groupId: string) => {
     await userJoinChat(groupId);
-
-    setUnreadMessages((prev) => ({
-      ...prev,
-      [groupId]: 0,
-    }));
 
     router.push({
       pathname: "/chat",
@@ -62,24 +55,25 @@ const ChatsPrivate = () => {
       <View style={styles.info}>
         <Text style={styles.roomName}>{item.name}</Text>
       </View>
-      {unreadMessages[item.id] > 0 && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{unreadMessages[item.id]}</Text>
-        </View>
-      )}
     </TouchableOpacity>
   );
 
   return (
     <LayoutPage headerTitle={title} tabs={true}>
-      <View style={styles.container}>
-        <FlatList
-          data={rooms}
-          renderItem={renderRoom}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.list}
-        />
-      </View>
+      <>
+        {rooms.length > 0 ? (
+          <FlatList
+            data={rooms}
+            renderItem={renderRoom}
+            keyExtractor={(item) => item.id}
+            style={styles.list}
+          />
+        ) : (
+          <View style={styles.container}>
+            <Text style={styles.textArrayNull}>Nenhuma conversa encontrada</Text>
+          </View>
+        )}
+      </>
     </LayoutPage>
   );
 };
@@ -87,22 +81,13 @@ const ChatsPrivate = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-  },
-  newRoomButton: {
-    backgroundColor: "#6200EE",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 8,
-    padding: 12,
-    borderRadius: 8,
     alignItems: "center",
-    marginBottom: 16,
   },
-  newRoomText: {
+
+  textArrayNull: {
+    fontSize: 16,
     color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
+    marginTop: 30,
   },
   list: {
     paddingBottom: 16,
@@ -133,20 +118,6 @@ const styles = StyleSheet.create({
   roomName: {
     fontSize: 18,
     color: "#fff",
-    fontWeight: "bold",
-  },
-  badge: {
-    backgroundColor: "red",
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    position: "absolute",
-    right: 10,
-    top: 10,
-  },
-  badgeText: {
-    color: "#fff",
-    fontSize: 14,
     fontWeight: "bold",
   },
 });
