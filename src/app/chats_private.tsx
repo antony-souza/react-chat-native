@@ -26,7 +26,6 @@ const ChatsPrivate = () => {
 
   useEffect(() => {
     handleListRooms();
-    setupSocketListeners();
   }, []);
 
   const userJoinChat = async (groupId: string) => {
@@ -46,7 +45,7 @@ const ChatsPrivate = () => {
 
     router.push({
       pathname: "/chat",
-      params: { groupName, groupId },
+      params: { groupName, groupId: `${groupId}` },
     });
   };
 
@@ -55,15 +54,6 @@ const ChatsPrivate = () => {
     const response = await httpClient.genericRequest(`${environment.findAllChatsPrivateByUsers}/${userId}`, "GET") as IRoomsList[];
     setRooms(response);
     return response;
-  };
-
-  const setupSocketListeners = async () => {
-    await socket.on("newMessage", (data: { groupId: string }) => {
-      setUnreadMessages((prev) => ({
-        ...prev,
-        [data.groupId]: (prev[data.groupId] || 0) + 1,
-      }));
-    });
   };
 
   const renderRoom = ({ item }: { item: IRoomsList }) => (

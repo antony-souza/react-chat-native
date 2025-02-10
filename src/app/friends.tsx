@@ -135,7 +135,7 @@ const FriendsPage = () => {
             ]);
     };
 
-    const goToFriendChat = async (groupName: string, friendId: string, friendImgUrl: string) => {
+   /*  const goToFriendChat = async (groupName: string, friendId: string, friendImgUrl: string) => {
         const userId = await Security.getItemAsync('userId') as string;
         const formData = new FormData();
 
@@ -159,9 +159,9 @@ const FriendsPage = () => {
 
         router.push({
             pathname: "/chat",
-            params: { groupName: groupName, groupId: `${friendId}-${userId}` },
+            params: { groupName: groupName, groupId: response.id },
         });
-    };
+    }; */
 
     const renderAllFriends = ({ item }: { item: IFriend }) => (
         <View style={styles.card}>
@@ -169,9 +169,6 @@ const FriendsPage = () => {
             <View style={styles.info}>
                 <Text style={styles.friendName}>{item.name}</Text>
             </View>
-            <TouchableOpacity onPress={() => goToFriendChat(item.name, item.userId, item.image)}>
-                <Icon name="comment-dots" size={24} color="#fff" style={styles.icon} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => confirmRemoveFriend(item.id)}>
                 {loading ? (
                     <ActivityIndicator size="small" color="#6200EE" />
