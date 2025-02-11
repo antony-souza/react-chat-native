@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
 import * as SecureStore from "expo-secure-store";
+import { useForm } from "react-hook-form";
 
 interface IUserResponse {
     name: string;
@@ -12,7 +13,8 @@ interface IUserResponse {
 }
 
 const Profile = () => {
-    const title = "Profile";
+    const title = "Perfil";
+    const { control, handleSubmit, setValue, watch, formState: { isValid } } = useForm();
     const [user, setUser] = useState<IUserResponse>();
     const [loading, setLoading] = useState(false);
 
@@ -25,6 +27,21 @@ const Profile = () => {
             setLoading(true);
             const userId = await SecureStore.getItemAsync("userId");
             const response = await httpClient.genericRequest(`${environment.getUser}/${userId}`, "GET") as IUserResponse;
+            setUser(response);
+        } catch (error) {
+            Alert.alert("Falha ao buscar as informações de perfil");
+            setLoading(false);
+        }
+        finally {
+            setLoading(false);
+        }
+    }
+
+    const updateUser = async () => {
+        try {
+            setLoading(true);
+            const userId = await SecureStore.getItemAsync("userId");
+            const response = await httpClient.genericRequest(`${environment.getUser}/${userId}`, "PUT") as IUserResponse;
             setUser(response);
         } catch (error) {
             Alert.alert("Falha ao buscar as informações de perfil");
@@ -51,22 +68,26 @@ const Profile = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        gap: 10,
+        justifyContent: "flex-start",
         alignItems: "center",
         padding: 20,
+        marginTop: 20,
     },
     avatar: {
-        width: 100,
-        height: 100,
+        width: 200,
+        height: 200,
         borderRadius: 50,
         marginBottom: 10,
     },
     name: {
-        fontSize: 20,
+        fontSize: 30,
         fontWeight: "bold",
         color: "#fff",
     },
     email: {
-        fontSize: 16,
+        fontSize: 18,
         color: "#ccc",
     },
 });

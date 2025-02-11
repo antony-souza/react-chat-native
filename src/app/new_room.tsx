@@ -42,7 +42,6 @@ const NewRoom = () => {
             }
 
             const createRoom = await httpClient.genericRequest(environment.createRoom, "POST", formData);
-            console.log(createRoom);
             if (createRoom.statusCode === 400 || createRoom.statusCode === 500 || createRoom.statusCode === 501 || createRoom.statusCode === 404) {
                 setLoading(false);
                 Alert.alert("Falha ao criar sala.");

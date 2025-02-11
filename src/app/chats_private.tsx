@@ -70,7 +70,7 @@ const ChatsPrivate = () => {
           />
         ) : (
           <View style={styles.container}>
-            <Text style={styles.textArrayNull}>Nenhuma conversa encontrada</Text>
+            <Text style={styles.textArrayNull}>Nenhuma conversa com amigo encontrada</Text>
           </View>
         )}
       </>
