@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
-import { io } from "socket.io-client";
 import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import Header from "../../components/header";
-import { useGlobalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import * as Security from 'expo-secure-store'
 import LayoutPage from "../../layouts/dark-layout";
-import { set } from "react-hook-form";
-import TabsNavigation from "../../components/tabs";
 
 interface IRoomsList {
   id: string;
@@ -97,6 +93,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E1E1E",
     borderRadius: 12,
     padding: 12,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    marginTop: 20,
     marginBottom: 16,
     alignItems: "center",
     shadowColor: "#000",
