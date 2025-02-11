@@ -12,7 +12,6 @@ interface ITabsMenu {
 const TabsNavigation = () => {
     const router = useRouter();
     const [menu, setMenu] = useState<ITabsMenu[]>([
-        { icon: 'user', route: '/profile', name: 'Perfil' },
         { icon: 'users', route: '/group', name: 'Grupos' },
         { icon: 'comments', route: '/chats_private', name: 'Conversas' },
         { icon: 'address-book', route: '/friends', name: 'Amigos' },
