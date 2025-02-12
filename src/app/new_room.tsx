@@ -6,6 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import { httpClient } from "../../utils/generic-request";
 import { environment } from "../environment/environment";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 
 interface INewRoom {
     name: string;
@@ -26,6 +27,9 @@ const NewRoom = () => {
 
         try {
             const formData = new FormData();
+            const userId = await SecureStore.getItemAsync("userId") as string;
+            formData.append("admins", userId);
+            formData.append("users", userId);
             formData.append("name", data.name);
 
             if (profileImage) {
@@ -41,6 +45,7 @@ const NewRoom = () => {
             }
 
             const createRoom = await httpClient.genericRequest(environment.createRoom, "POST", formData);
+
             if (createRoom.statusCode === 400 || createRoom.statusCode === 500 || createRoom.statusCode === 501 || createRoom.statusCode === 404) {
                 setLoading(false);
                 Alert.alert("Falha ao criar sala.");
