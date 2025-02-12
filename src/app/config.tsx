@@ -26,9 +26,6 @@ const ConfigPage = () => {
     const [user, setUser] = useState<IUserResponse>();
     const [configList] = useState<IConfigList[]>([
         { name: 'Alterar Informações', icon: 'user', route: '/put-user' },
-        { name: 'Segurança', icon: 'shield-alt', route: '/security' },
-        { name: 'Notificações', icon: 'bell', route: '/notifications' },
-        { name: 'Ajuda', icon: 'question-circle', route: '/help' },
     ]);
 
     useEffect(() => {
