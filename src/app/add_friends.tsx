@@ -40,7 +40,10 @@ const AddFriends = () => {
 
             const response = await httpClient.genericRequest(environment.sendFriendRequest, "POST", { requesterUserId: userId, friendId: friendId });
             if (response) {
-                Alert.alert("Solicitação de amizade enviada com sucesso");
+                Alert.alert(
+                    "Solicitação de amizade enviada com sucesso",
+                    "Aguarde a aceitação do usuário"
+                );
                 setLoading(false);
             }
         } catch {

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Text, View, TouchableOpacity, TextInput, StyleSheet, Image, ActivityIndicator, Alert } from "react-native";
 import LayoutPage from "../../layouts/dark-layout";
-import Header from "../../components/header";
 import { Controller, useForm } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import { httpClient } from "../../utils/generic-request";
