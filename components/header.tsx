@@ -1,16 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 
 interface IHeaderProps {
     title: string;
+    onInformationPress?: () => void;
     arrowBackFunction?: () => void
 }
 
-const Header:React.FC<IHeaderProps> = ({title, arrowBackFunction}) => {
-    const router = useRouter();
+const Header: React.FC<IHeaderProps> = ({ title, arrowBackFunction, onInformationPress }) => {
+    const router = useRouter()
 
     const onLogoutPress = async () => {
         await SecureStore.deleteItemAsync("userId");
@@ -28,11 +29,13 @@ const Header:React.FC<IHeaderProps> = ({title, arrowBackFunction}) => {
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={handleBackPage}>
-                <Ionicons name="arrow-back" size={24} color="#fff" />
+                <Icon name="arrow-left" size={24} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.title}>{title}</Text>
+            <TouchableOpacity onPress={onInformationPress}>
+                <Text style={styles.title}>{title}</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={onLogoutPress}>
-                <Ionicons name="log-out-outline" size={24} color="#fff" />
+                <Icon name="sign-out-alt" size={24} color="#fff" />
             </TouchableOpacity>
         </View>
     );
@@ -52,6 +55,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#fff",
     },
+    containerTitleInfo:{
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 10,
+    }
 });
 
 export default Header;

@@ -107,6 +107,13 @@ const ChatPage: React.FC = () => {
         router.back()
     };
 
+    const handleInformationChat =  () => {
+        router.push({
+            pathname: '/information-chat',
+            params: {groupId },
+        });
+    }
+
     const renderMessage = ({ item }: { item: IMessage }) => (
         <View
             style={[

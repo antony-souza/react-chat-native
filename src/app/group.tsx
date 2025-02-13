@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
-import { io } from "socket.io-client";
 import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import Header from "../../components/header";
-import { useGlobalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import * as Security from 'expo-secure-store'
 import LayoutPage from "../../layouts/dark-layout";
-import { set } from "react-hook-form";
-import TabsNavigation from "../../components/tabs";
+
 
 interface IRoomsList {
   id: string;
@@ -22,11 +19,9 @@ const GroupList = () => {
   const [unreadMessages, setUnreadMessages] = useState<{ [key: string]: number }>({});
   const title: string = "Grupos";
   const router = useRouter();
-  const socket = io(environment.apiUrl);
 
   useEffect(() => {
     handleListRooms();
-    setupSocketListeners();
   }, []);
 
   const userJoinChat = async (groupId: string) => {
@@ -55,15 +50,6 @@ const GroupList = () => {
     const response = await httpClient.genericRequest(`${environment.findAllGroupsByUsers}/${userId}`, "GET") as IRoomsList[];
     setRooms(response);
     return response;
-  };
-
-  const setupSocketListeners = async () => {
-    await socket.on("newMessage", (data: { groupId: string }) => {
-      setUnreadMessages((prev) => ({
-        ...prev,
-        [data.groupId]: (prev[data.groupId] || 0) + 1,
-      }));
-    });
   };
 
   const handlePathNewRoom = () => {

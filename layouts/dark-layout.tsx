@@ -4,17 +4,19 @@ import TabsNavigation from '../components/tabs';
 import Header from '../components/header';
 
 interface IDarkLayoutProps {
-    children: React.ReactNode;
-    headerTitle: string
     tabs?: boolean;
     onBack?: () => void;
+    children: React.ReactNode;
+    headerTitle: string
+    onInformationPress?: () => void;
 }
 
-const LayoutPage: React.FC<IDarkLayoutProps> = ({ children, headerTitle, tabs, onBack }) => {
+const LayoutPage: React.FC<IDarkLayoutProps> = ({ children, headerTitle, tabs, onBack, onInformationPress }) => {
     return (
         <View style={styles.container}>
             <Header 
                 title={headerTitle} 
+                onInformationPress={onInformationPress}
                 arrowBackFunction={onBack}
             />
             {children}

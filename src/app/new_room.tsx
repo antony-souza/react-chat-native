@@ -53,7 +53,7 @@ const NewRoom = () => {
             }
 
             setLoading(false);
-            Alert.alert("Sala criada com sucesso.");
+            Alert.alert("Grupo criado com sucesso.");
             router.push("/group");
 
         } catch (error) {

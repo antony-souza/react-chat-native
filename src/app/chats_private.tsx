@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import { environment } from "../environment/environment";
 import { httpClient } from "../../utils/generic-request";
-import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
 import * as Security from 'expo-secure-store'
 import LayoutPage from "../../layouts/dark-layout";
