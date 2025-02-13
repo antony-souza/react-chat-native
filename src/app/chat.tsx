@@ -48,7 +48,7 @@ const ChatPage: React.FC = () => {
     }, []);
 
     const handleHistoryMessages = async () => {
-        const chatId = groupId; 
+        const chatId = groupId;
         const response = await httpClient.genericRequest(`${environment.historyMessages}/${chatId}`, "GET");
         if (response && Array.isArray(response)) {
             const mappedMessages = response.map((msg: any) => ({
@@ -107,10 +107,10 @@ const ChatPage: React.FC = () => {
         router.back()
     };
 
-    const handleInformationChat =  () => {
+    const handleInformationChat = () => {
         router.push({
             pathname: '/information-chat',
-            params: {groupId },
+            params: { groupId },
         });
     }
 
@@ -133,7 +133,11 @@ const ChatPage: React.FC = () => {
     );
 
     return (
-        <LayoutPage headerTitle={groupName} onBack={handleLeaveGroup}>
+        <LayoutPage
+            subTitleInformation={true}
+            headerTitle={groupName}
+            onBack={handleLeaveGroup}
+            onInformationPress={handleInformationChat}>
             <View style={styles.container}>
                 <View style={styles.chatBox}>
                     <FlatList

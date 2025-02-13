@@ -6,17 +6,18 @@ import * as SecureStore from "expo-secure-store";
 
 interface IHeaderProps {
     title: string;
+    subTitleInformation?: boolean;
     onInformationPress?: () => void;
-    arrowBackFunction?: () => void
+    arrowBackFunction?: () => void;
 }
 
-const Header: React.FC<IHeaderProps> = ({ title, arrowBackFunction, onInformationPress }) => {
-    const router = useRouter()
+const Header: React.FC<IHeaderProps> = ({ title, subTitleInformation, arrowBackFunction, onInformationPress }) => {
+    const router = useRouter();
 
     const onLogoutPress = async () => {
         await SecureStore.deleteItemAsync("userId");
         router.push("/");
-    }
+    };
 
     const handleBackPage = () => {
         if (arrowBackFunction) {
@@ -24,16 +25,19 @@ const Header: React.FC<IHeaderProps> = ({ title, arrowBackFunction, onInformatio
         } else {
             router.back();
         }
-    }
+    };
 
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={handleBackPage}>
                 <Icon name="arrow-left" size={24} color="#fff" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={onInformationPress}>
+
+            <TouchableOpacity style={styles.textContainer} onPress={onInformationPress}>
                 <Text style={styles.title}>{title}</Text>
+                {subTitleInformation && <Text style={styles.subTitle}>Informações</Text>}
             </TouchableOpacity>
+
             <TouchableOpacity onPress={onLogoutPress}>
                 <Icon name="sign-out-alt" size={24} color="#fff" />
             </TouchableOpacity>
@@ -50,16 +54,19 @@ const styles = StyleSheet.create({
         backgroundColor: "#1E1E1E",
         height: 60,
     },
+    textContainer: {
+        alignItems: "center",
+    },
     title: {
         fontSize: 20,
         fontWeight: "bold",
         color: "#fff",
     },
-    containerTitleInfo:{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-    }
+    subTitle: {
+        fontSize: 12,
+        color: "#fff",
+        marginTop: -3,
+    },
 });
 
 export default Header;
