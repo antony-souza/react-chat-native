@@ -32,7 +32,7 @@ interface IUserResponse {
 }
 
 const ChatPage: React.FC = () => {
-    const { groupName, groupId } = useGlobalSearchParams() as { groupName: string; groupId: string };
+    const { groupName, groupId, group } = useGlobalSearchParams() as { groupName: string; groupId: string, group: string };
     const router = useRouter();
     const [messages, setMessages] = useState<IMessage[]>([]);
     const [newMessage, setNewMessage] = useState<string>('');
@@ -135,6 +135,7 @@ const ChatPage: React.FC = () => {
     return (
         <LayoutPage
             subTitleInformation={true}
+            group={Boolean(group)}
             headerTitle={groupName}
             onBack={handleLeaveGroup}
             onInformationPress={handleInformationChat}>

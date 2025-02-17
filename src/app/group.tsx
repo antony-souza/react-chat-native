@@ -16,8 +16,8 @@ interface IRoomsList {
 
 const GroupList = () => {
   const [rooms, setRooms] = useState<IRoomsList[]>([]);
-  const [unreadMessages, setUnreadMessages] = useState<{ [key: string]: number }>({});
   const title: string = "Grupos";
+  const group = true
   const router = useRouter();
 
   useEffect(() => {
@@ -34,14 +34,9 @@ const GroupList = () => {
   const handlePathChat = async (groupName: string, groupId: string) => {
     await userJoinChat(groupId);
 
-    setUnreadMessages((prev) => ({
-      ...prev,
-      [groupId]: 0,
-    }));
-
     router.push({
       pathname: "/chat",
-      params: { groupName, groupId },
+      params: { groupName, groupId, group: group.toString() },
     });
   };
 
@@ -62,11 +57,6 @@ const GroupList = () => {
       <View style={styles.info}>
         <Text style={styles.roomName}>{item.name}</Text>
       </View>
-      {unreadMessages[item.id] > 0 && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{unreadMessages[item.id]}</Text>
-        </View>
-      )}
     </TouchableOpacity>
   );
 

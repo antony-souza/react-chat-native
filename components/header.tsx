@@ -7,11 +7,12 @@ import * as SecureStore from "expo-secure-store";
 interface IHeaderProps {
     title: string;
     subTitleInformation?: boolean;
+    group?: boolean;
     onInformationPress?: () => void;
     arrowBackFunction?: () => void;
 }
 
-const Header: React.FC<IHeaderProps> = ({ title, subTitleInformation, arrowBackFunction, onInformationPress }) => {
+const Header: React.FC<IHeaderProps> = ({ title, subTitleInformation, group, arrowBackFunction, onInformationPress }) => {
     const router = useRouter();
 
     const onLogoutPress = async () => {
@@ -33,10 +34,16 @@ const Header: React.FC<IHeaderProps> = ({ title, subTitleInformation, arrowBackF
                 <Icon name="arrow-left" size={24} color="#fff" />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.textContainer} onPress={onInformationPress}>
-                <Text style={styles.title}>{title}</Text>
-                {subTitleInformation && <Text style={styles.subTitle}>Informações</Text>}
-            </TouchableOpacity>
+            {group ? (
+                <TouchableOpacity style={styles.textContainer} onPress={onInformationPress}>
+                    <Text style={styles.title}>{title}</Text>
+                    {subTitleInformation && <Text style={styles.subTitle}>Informações</Text>}
+                </TouchableOpacity>
+            ) : (
+                <View style={styles.textContainer}>
+                    <Text style={styles.title}>{title}</Text>
+                </View>
+            )}
 
             <TouchableOpacity onPress={onLogoutPress}>
                 <Icon name="sign-out-alt" size={24} color="#fff" />

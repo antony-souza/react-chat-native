@@ -8,15 +8,17 @@ interface IDarkLayoutProps {
     onBack?: () => void;
     children: React.ReactNode;
     headerTitle: string
+    group?: boolean;
     subTitleInformation?: boolean;
     onInformationPress?: () => void;
 }
 
-const LayoutPage: React.FC<IDarkLayoutProps> = ({ children, headerTitle, tabs, subTitleInformation, onBack, onInformationPress }) => {
+const LayoutPage: React.FC<IDarkLayoutProps> = ({ children, headerTitle, tabs, subTitleInformation, group, onBack, onInformationPress }) => {
     return (
         <View style={styles.container}>
             <Header
                 title={headerTitle}
+                group={group}
                 subTitleInformation={subTitleInformation}
                 onInformationPress={onInformationPress}
                 arrowBackFunction={onBack}
