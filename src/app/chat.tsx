@@ -68,7 +68,7 @@ const ChatPage: React.FC = () => {
         });
         setSocket(socketConnection);
 
-        socketConnection.emit('joinGroup', userName, groupName);
+        socketConnection.emit('joinGroup', userName, groupId);
 
         socketConnection.on('msgGroup', (data: IMessage) => {
             setMessages((prevMessages) => [...prevMessages, data]);

@@ -8,8 +8,9 @@ import LayoutPage from "../../layouts/dark-layout";
 
 interface IRoomsList {
   id: string;
+  userId: string;
   name: string;
-  imgUrl: string;
+  img: string;
 }
 
 const ChatsPrivate = () => {
@@ -46,7 +47,7 @@ const ChatsPrivate = () => {
 
   const renderRoom = ({ item }: { item: IRoomsList }) => (
     <TouchableOpacity onPress={() => handlePathChat(item.name, item.id)} style={styles.card}>
-      <Image source={{ uri: item.imgUrl }} style={styles.image} />
+      <Image source={{ uri: item.img }} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.roomName}>{item.name}</Text>
       </View>

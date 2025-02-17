@@ -22,7 +22,6 @@ const AddFriendToGroup = () => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        // Busca a lista de amigos quando o componente é montado
         const fetchFriends = async () => {
             setLoading(true);
             try {
@@ -60,23 +59,30 @@ const AddFriendToGroup = () => {
         <LayoutPage headerTitle={title} tabs={true}>
             <View style={styles.container}>
                 {loading && <ActivityIndicator size="large" color="#007bff" style={styles.loader} />}
-
-                <FlatList
-                    data={users}
-                    keyExtractor={(item) => item.id}
-                    style={{ marginTop: 20 }}
-                    renderItem={({ item }) => (
-                        <View style={styles.card}>
-                            <Image source={{ uri: item.image }} style={styles.userImage} />
-                            <View style={styles.userInfo}>
-                                <Text style={styles.userName}>{item.name}</Text>
-                            </View>
-                            <TouchableOpacity style={styles.addButton} onPress={() => addFriendToGroup(item.userId)}>
-                                <Icon name="user-plus" size={24} color="#fff" />
-                            </TouchableOpacity>
-                        </View>
+                <View style={styles.container}>
+                    {loading && <ActivityIndicator size="large" color="#007bff" style={styles.loader} />}
+                    {users.length > 0 ? (
+                        <FlatList
+                            data={users}
+                            keyExtractor={(item) => item.id}
+                            style={{ marginTop: 20 }}
+                            renderItem={({ item }) => (
+                                <View style={styles.card}>
+                                    <Image source={{ uri: item.image }} style={styles.userImage} />
+                                    <View style={styles.userInfo}>
+                                        <Text style={styles.userName}>{item.name}</Text>
+                                    </View>
+                                    <TouchableOpacity style={styles.addButton} onPress={() => addFriendToGroup(item.userId)}>
+                                        <Icon name="user-plus" size={24} color="#fff" />
+                                    </TouchableOpacity>
+                                </View>
+                            )}
+                        />
+                    ) : (
+                        !loading && <Text style={styles.noFriends}>Nenhum amigo na sua lista de amigos encontrado!</Text>
                     )}
-                />
+                </View>
+
             </View>
         </LayoutPage>
     );
@@ -120,6 +126,13 @@ const styles = StyleSheet.create({
         backgroundColor: "#6200EE",
         borderRadius: 8,
     },
+    noFriends: {
+        textAlign: "center",
+        color: "#bbb",
+        fontSize: 16,
+        marginTop: 10,
+    },
+    
 });
 
 export default AddFriendToGroup;
