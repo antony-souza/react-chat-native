@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, FlatList, StyleSheet, Image } from "react-native";
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, Image, Linking } from "react-native";
 import LayoutPage from "../../layouts/dark-layout";
 import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome5";
@@ -17,7 +17,7 @@ interface IUserResponse {
 interface IConfigList {
     name: string;
     icon: string;
-    route: string;
+    route?: string;
 }
 
 const ConfigPage = () => {
@@ -26,11 +26,16 @@ const ConfigPage = () => {
     const [user, setUser] = useState<IUserResponse>();
     const [configList] = useState<IConfigList[]>([
         { name: 'Alterar Informações', icon: 'user', route: '/put-user' },
+        { name: 'Desenvolvedor', icon: 'github' },
     ]);
 
     useEffect(() => {
         findUser();
     }, []);
+
+    const linkedGitHub = () => {
+        Linking.openURL(environment.github);
+    }
 
     const findUser = async () => {
         const userId = await SecureStore.getItemAsync("userId");
@@ -39,12 +44,16 @@ const ConfigPage = () => {
     };
 
     const renderConfigList = ({ item }: { item: IConfigList }) => (
-        <TouchableOpacity onPress={() => router.navigate(item.route)}>
-            <View style={styles.card}>
-                <Icon name={item.icon} size={20} style={styles.icon} />
-                <Text style={styles.text}>{item.name}</Text>
+        <>
+            <View style={styles.flatlistContainer}>
+                <TouchableOpacity onPress={() => item.route ? router.push(item.route) : linkedGitHub()}>
+                    <View style={styles.card}>
+                        <Icon name={item.icon} size={20} style={styles.icon} />
+                        <Text style={styles.text}>{item.name}</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
-        </TouchableOpacity>
+        </>
     );
 
     return (
@@ -91,7 +100,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     flatlistContainer: {
-        gap: 5,
+        gap: 10,
     },
     card: {
         flexDirection: 'row',

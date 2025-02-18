@@ -85,6 +85,8 @@ const ChatPage: React.FC = () => {
         return response;
     };
 
+    
+
     const handleSendMessage = () => {
         if (newMessage.trim() && socket && userId && userImg && userName) {
             const messageData: IMessage = {

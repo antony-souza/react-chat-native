@@ -3,11 +3,9 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndi
 import * as Security from 'expo-secure-store';
 import { httpClient } from "../../utils/generic-request";
 import { environment } from "../environment/environment";
-import Header from "../../components/header";
 import LayoutPage from "../../layouts/dark-layout";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { useRouter } from "expo-router";
-import TabsNavigation from "../../components/tabs";
 
 
 interface IFriend {
@@ -112,7 +110,6 @@ const FriendsPage = () => {
             setLoading(true);
 
             const response = await httpClient.genericRequest(`${environment.removeFriend}/${id}`, "PUT");
-            console.log(response);
             fetchFriends();
         } catch (error) {
             Alert.alert("Falha ao remover amigo");

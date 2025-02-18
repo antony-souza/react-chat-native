@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, FlatList, StyleSheet, Image, Alert } from "react-native";
+import { Text, TouchableOpacity, View, FlatList, StyleSheet, Image, Alert, ActivityIndicator } from "react-native";
 import LayoutPage from "../../layouts/dark-layout";
 import { useEffect, useState } from "react";
 import { httpClient } from "../../utils/generic-request";
@@ -19,6 +19,7 @@ interface IChatResponse {
 
 const InformationChat = () => {
     const title = "Informações do Grupo";
+    const [loading, setLoading] = useState(false);
     const { groupId } = useGlobalSearchParams() as { groupId: string };
     const router = useRouter()
     const [chat, setChat] = useState<IChatResponse[]>([]);
@@ -28,8 +29,10 @@ const InformationChat = () => {
     }, []);
 
     const findChatInfo = async () => {
+        setLoading(true);
         const response = await httpClient.genericRequest(`${environment.getChatInfo}/${groupId}`, "GET") as IChatResponse[]
         setChat(response);
+        setLoading(false);
     };
 
     const handleRouterToAddMembers = () => {
@@ -40,13 +43,52 @@ const InformationChat = () => {
     }
 
     const removeMember = async (userId: string) => {
+        setLoading(true);
         const adminId = await Security.getItemAsync('userId');
-        
+
         const response = await httpClient.genericRequest(`${environment.removeUserFromChat}/${groupId}/${userId}/${adminId}`, "PUT");
 
-        if (response) {
+        if (response.statusCode === 409) {
+            Alert.alert("Erro", "Você não é um administrador do grupo!");
+        }
+
+        if (response.modifiedCount === 1) {
             findChatInfo();
         }
+
+        setLoading(false);
+    }
+
+    const deleteGroup = async () => {
+        setLoading(true);
+        const userId = await Security.getItemAsync('userId');
+        const response = await httpClient.genericRequest(`${environment.deleteGroup}/${groupId}/${userId}`, "PUT");
+        setLoading(false);
+
+        if (response.statusCode === 409) {
+            Alert.alert("Erro", "Você não é um administrador do grupo!");
+        }
+
+        if(response.modifiedCount === 1) {
+            router.push("/group");
+        }
+    }
+
+    const confirmDeleteGroup = () => {
+        Alert.alert(
+            "Desativar Grupo",
+            "Tem certeza que deseja desativar esse grupo?",
+            [
+                {
+                    text: "Não",
+                    style: "cancel"
+                },
+                {
+                    text: "Sim",
+                    onPress: () => deleteGroup()
+                }
+            ]
+        );
     }
 
     const confirmRemoveUser = (userId: string) => {
@@ -80,26 +122,35 @@ const InformationChat = () => {
     );
 
     return (
-        <LayoutPage headerTitle={title} tabs={false}>
-            <View style={styles.container}>
-                <View style={styles.chatContainer}>
-                    <Image source={{ uri: chat[0]?.chatImgUrl }} style={styles.imageChat} />
-                    <Text style={styles.name}>{chat[0]?.chatName}</Text>
+        <LayoutPage headerTitle={title} tabs={true}>
+            {loading ? (
+                <ActivityIndicator size="large" color="#6200EE" style={styles.loading} />
+            ) : (
+                <View style={styles.container}>
+                    <View style={styles.chatContainer}>
+                        <Image source={{ uri: chat[0]?.chatImgUrl }} style={styles.imageChat} />
+                        <Text style={styles.name}>{chat[0]?.chatName}</Text>
+                    </View>
+                    <View style={styles.titleAndAddMembers}>
+                        <Text style={styles.sectionTitle}>Membros</Text>
+                        <TouchableOpacity onPress={handleRouterToAddMembers}>
+                            <Text style={styles.btnText}>Adicionar Membros</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <FlatList
+                        data={chat}
+                        renderItem={renderMembers}
+                        keyExtractor={item => item.userId}
+                        style={styles.flatlistContainer}
+                        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+                        ListFooterComponent={() => (
+                            <TouchableOpacity onPress={confirmDeleteGroup} style={styles.deleteGroup}>
+                                <Text style={styles.btnText}>Desativar Grupo</Text>
+                            </TouchableOpacity>
+                        )}
+                    />
                 </View>
-                <View style={styles.titleAndAddMembers}>
-                    <Text style={styles.sectionTitle}>Membros</Text>
-                    <TouchableOpacity onPress={handleRouterToAddMembers}>
-                        <Text style={styles.addMembers}>Adicionar Membros</Text>
-                    </TouchableOpacity>
-                </View>
-                <FlatList
-                    data={chat}
-                    renderItem={renderMembers}
-                    keyExtractor={item => item.userId}
-                    style={styles.flatlistContainer}
-                    ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                />
-            </View>
+            )}
         </LayoutPage>
     );
 };
@@ -109,6 +160,11 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
         gap: 20,
+    },
+    loading: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     chatContainer: {
         alignItems: 'center',
@@ -136,7 +192,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
-    addMembers: {
+    btnText: {
         color: '#6200EE',
         fontSize: 16,
     },
@@ -172,6 +228,11 @@ const styles = StyleSheet.create({
     removeIcon: {
         marginLeft: 'auto',
     },
+    deleteGroup: {
+        marginTop: 20,
+        alignItems: 'flex-end',
+    },
+
 });
 
 export default InformationChat;
