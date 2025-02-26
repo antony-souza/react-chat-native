@@ -1,6 +1,6 @@
 # Duck Chat
 
-Usando NestJs com WebSockets para fazer a comunicação em tempo real.
+Usando React Native e NestJs com WebSockets para fazer a comunicação em tempo real.
 
 # Informações Técnicas
 
